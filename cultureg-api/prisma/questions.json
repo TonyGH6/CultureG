@@ -1,0 +1,132 @@
+[
+  {
+    "slug": "general-capital-canada",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la capitale du Canada ?",
+    "difficulty": 1,
+    "options": [
+      { "label": "Toronto", "isCorrect": false },
+      { "label": "Vancouver", "isCorrect": false },
+      { "label": "Ottawa", "isCorrect": true },
+      { "label": "Montréal", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "general-vote-femmes",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel pays a été le premier à accorder le droit de vote aux femmes ?",
+    "difficulty": 2,
+    "options": [
+      { "label": "États-Unis", "isCorrect": false },
+      { "label": "France", "isCorrect": false },
+      { "label": "Nouvelle-Zélande", "isCorrect": true },
+      { "label": "Suède", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-element-abondant",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel est l'élément chimique le plus abondant dans l'univers ?",
+    "difficulty": 2,
+    "options": [
+      { "label": "Oxygène", "isCorrect": false },
+      { "label": "Hydrogène", "isCorrect": true },
+      { "label": "Hélium", "isCorrect": false },
+      { "label": "Carbone", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "general-siege-onu",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Dans quelle ville se trouve le siège de l'ONU ?",
+    "difficulty": 1,
+    "options": [
+      { "label": "Genève", "isCorrect": false },
+      { "label": "Paris", "isCorrect": false },
+      { "label": "Washington D.C.", "isCorrect": false },
+      { "label": "New York", "isCorrect": true }
+    ]
+  },
+  {
+    "slug": "art-nuit-etoilee",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel peintre est l'auteur du tableau La Nuit étoilée ?",
+    "difficulty": 1,
+    "options": [
+      { "label": "Pablo Picasso", "isCorrect": false },
+      { "label": "Claude Monet", "isCorrect": false },
+      { "label": "Vincent van Gogh", "isCorrect": true },
+      { "label": "Salvador Dalí", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-bataille-austerlitz",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "En quelle année a eu lieu la bataille d'Austerlitz ?",
+    "difficulty": 2,
+    "options": [
+      { "label": "1799", "isCorrect": false },
+      { "label": "1805", "isCorrect": true },
+      { "label": "1812", "isCorrect": false },
+      { "label": "1815", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-traite-versailles",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel traité met officiellement fin à la Première Guerre mondiale ?",
+    "difficulty": 2,
+    "options": [
+      { "label": "Traité de Tordesillas", "isCorrect": false },
+      { "label": "Traité de Versailles", "isCorrect": true },
+      { "label": "Traité de Westphalie", "isCorrect": false },
+      { "label": "Traité de Vienne", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-constantin-christianisme",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel empereur romain a légalisé le christianisme ?",
+    "difficulty": 2,
+    "options": [
+      { "label": "Néron", "isCorrect": false },
+      { "label": "Auguste", "isCorrect": false },
+      { "label": "Constantin Ier", "isCorrect": true },
+      { "label": "Théodose Ier", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-darwin-beagle",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel était le nom du navire sur lequel Charles Darwin a voyagé lors de son expédition scientifique ?",
+    "difficulty": 2,
+    "options": [
+      { "label": "HMS Victory", "isCorrect": false },
+      { "label": "HMS Endeavour", "isCorrect": false },
+      { "label": "HMS Beagle", "isCorrect": true },
+      { "label": "HMS Discovery", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-machu-picchu",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle civilisation a construit la cité de Machu Picchu ?",
+    "difficulty": 2,
+    "options": [
+      { "label": "Maya", "isCorrect": false },
+      { "label": "Aztèque", "isCorrect": false },
+      { "label": "Inca", "isCorrect": true },
+      { "label": "Olmèque", "isCorrect": false }
+    ]
+  }
+]

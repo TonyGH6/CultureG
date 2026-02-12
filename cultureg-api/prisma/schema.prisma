@@ -1,0 +1,167 @@
+enum QuestionType {
+  QCM
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  username     String       @unique
+  passwordHash String
+  elo          Int          @default(1000)
+  createdAt    DateTime     @default(now())
+  matches      Match[]
+  duelPlayers  DuelPlayer[]
+}
+
+model Question {
+  id         String       @id @default(uuid())
+  slug       String       @unique
+  theme      String
+  type       QuestionType
+  prompt     String
+  difficulty Int          @default(2)
+  createdAt  DateTime     @default(now())
+
+  options        QuestionOption[]
+  matchQuestions MatchQuestion[]
+  matchAnswers   MatchAnswer[]
+  duelQuestions  DuelQuestion[]
+  duelAnswers    DuelAnswer[]
+}
+
+model QuestionOption {
+  id         String  @id @default(uuid())
+  label      String
+  isCorrect  Boolean @default(false)
+  orderIndex Int
+
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  matchAnswers MatchAnswer[]
+  duelAnswers  DuelAnswer[]
+
+  @@unique([questionId, orderIndex])
+}
+
+enum MatchStatus {
+  CREATED
+  FINISHED
+}
+
+model Match {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  eloBefore Int?
+  eloAfter  Int?
+
+  theme  String
+  status MatchStatus @default(CREATED)
+  score  Int         @default(0)
+
+  createdAt  DateTime  @default(now())
+  finishedAt DateTime?
+
+  questions MatchQuestion[]
+  answers   MatchAnswer[]
+}
+
+model MatchQuestion {
+  id         String @id @default(uuid())
+  matchId    String
+  questionId String
+  orderIndex Int
+
+  match    Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@unique([matchId, orderIndex])
+  @@unique([matchId, questionId])
+}
+
+model MatchAnswer {
+  id         String @id @default(uuid())
+  matchId    String
+  questionId String
+  optionId   String
+  timeMs     Int?
+
+  match    Match          @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  question Question       @relation(fields: [questionId], references: [id])
+  option   QuestionOption @relation(fields: [optionId], references: [id])
+
+  @@unique([matchId, questionId])
+}
+
+enum DuelStatus {
+  WAITING
+  ONGOING
+  FINISHED
+  CANCELED
+}
+
+model Duel {
+  id     String     @id @default(uuid())
+  theme  String
+  status DuelStatus @default(WAITING)
+
+  createdAt  DateTime  @default(now())
+  startedAt  DateTime?
+  finishedAt DateTime?
+
+  players   DuelPlayer[]
+  questions DuelQuestion[]
+}
+
+model DuelPlayer {
+  id       String   @id @default(uuid())
+  duelId   String
+  userId   String
+  joinedAt DateTime @default(now())
+  score    Int?
+
+  duel    Duel        @relation(fields: [duelId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers DuelAnswer[]
+
+  @@unique([duelId, userId])
+}
+
+model DuelQuestion {
+  id         String @id @default(uuid())
+  duelId     String
+  questionId String
+  orderIndex Int
+
+  duel     Duel     @relation(fields: [duelId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@unique([duelId, orderIndex])
+  @@unique([duelId, questionId])
+}
+
+model DuelAnswer {
+  id          String   @id @default(uuid())
+  duelId      String
+  playerUserId String
+  questionId  String
+  optionId    String
+  timeMs      Int?
+  createdAt   DateTime @default(now())
+
+  duelPlayer    DuelPlayer     @relation(fields: [duelId, playerUserId], references: [duelId, userId], onDelete: Cascade)
+  question      Question       @relation(fields: [questionId], references: [id])
+  option        QuestionOption @relation(fields: [optionId], references: [id])
+
+  @@unique([duelId, playerUserId, questionId])
+}
