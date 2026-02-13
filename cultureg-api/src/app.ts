@@ -10,6 +10,9 @@ import { env } from "./env";
 
 export const app = express();
 
+// Trust proxy (behind Nginx) — required for express-rate-limit behind a reverse proxy
+app.set("trust proxy", 1);
+
 app.use(cors());
 app.use(express.json());
 
