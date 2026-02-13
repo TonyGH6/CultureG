@@ -202,7 +202,7 @@
     "type": "QCM",
     "prompt": "Le tableau « Guernica » de Pablo Picasso dénonce le bombardement d'une ville de quel pays ?",
     "explanation": "Guernica est une ville du Pays basque espagnol, bombardée le 26 avril 1937 par la légion Condor allemande durant la guerre civile espagnole. Picasso réalisa cette toile monumentale (3,49 × 7,76 m) en quelques semaines pour le pavillon espagnol de l'Exposition universelle de Paris.",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/7/74/Guernica.jpg",
+    "imageUrl": null,
     "difficulty": 3,
     "options": [
       { "label": "France", "isCorrect": false },
