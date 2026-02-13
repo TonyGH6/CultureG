@@ -515,12 +515,12 @@ export default function App() {
                         </div>
 
                         {/* question card */}
-                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl">
-                            <div className="mb-8">
+                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-4 sm:p-8 shadow-2xl">
+                            <div className="mb-6 sm:mb-8">
                                 <span className="inline-block px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs font-semibold uppercase tracking-wider mb-4">
                                     {theme}
                                 </span>
-                                <h2 className="text-2xl font-bold text-white leading-relaxed">
+                                <h2 className="text-xl sm:text-2xl font-bold text-white leading-relaxed">
                                     {currentQ.prompt}
                                 </h2>
                             </div>
@@ -556,48 +556,53 @@ export default function App() {
                             </div>
 
                             {/* navigation */}
-                            <div className="mt-8 flex items-center justify-between">
-                                <button
-                                    onClick={() => duel.setCurrentQuestionIndex(Math.max(0, duel.currentQuestionIndex - 1))}
-                                    disabled={duel.currentQuestionIndex === 0}
-                                    className="px-5 py-2.5 rounded-xl bg-gray-800 text-gray-300 font-medium border border-gray-700 hover:bg-gray-700 hover:border-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                                >
-                                    ← Précédent
-                                </button>
-
-                                {/* question dots */}
-                                <div className="flex gap-1.5">
-                                    {duel.duelQuestions.map((q, i) => (
-                                        <button
-                                            key={q.id}
-                                            onClick={() => duel.setCurrentQuestionIndex(i)}
-                                            className={`w-3 h-3 rounded-full transition-all ${
-                                                i === duel.currentQuestionIndex
-                                                    ? "bg-purple-500 scale-125"
-                                                    : duel.answers[q.id]
-                                                      ? "bg-purple-400/50"
-                                                      : "bg-gray-700"
-                                            }`}
-                                        />
-                                    ))}
+                            <div className="mt-6 sm:mt-8 space-y-4">
+                                {/* question dots — scrollable on mobile */}
+                                <div className="flex justify-center overflow-x-auto pb-1">
+                                    <div className="flex gap-1.5 flex-shrink-0">
+                                        {duel.duelQuestions.map((q, i) => (
+                                            <button
+                                                key={q.id}
+                                                onClick={() => duel.setCurrentQuestionIndex(i)}
+                                                className={`w-3 h-3 rounded-full transition-all flex-shrink-0 ${
+                                                    i === duel.currentQuestionIndex
+                                                        ? "bg-purple-500 scale-125"
+                                                        : duel.answers[q.id]
+                                                          ? "bg-purple-400/50"
+                                                          : "bg-gray-700"
+                                                }`}
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
 
-                                {duel.currentQuestionIndex === totalQ - 1 ? (
+                                {/* prev / next buttons */}
+                                <div className="flex items-center justify-between gap-2">
                                     <button
-                                        onClick={handleSubmit}
-                                        disabled={answeredCount < totalQ}
-                                        className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold shadow-lg shadow-green-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+                                        onClick={() => duel.setCurrentQuestionIndex(Math.max(0, duel.currentQuestionIndex - 1))}
+                                        disabled={duel.currentQuestionIndex === 0}
+                                        className="px-4 sm:px-5 py-2.5 rounded-xl bg-gray-800 text-gray-300 text-sm sm:text-base font-medium border border-gray-700 hover:bg-gray-700 hover:border-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                     >
-                                        Valider ✓
+                                        ← Précédent
                                     </button>
-                                ) : (
-                                    <button
-                                        onClick={() => duel.setCurrentQuestionIndex(duel.currentQuestionIndex + 1)}
-                                        className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium shadow-lg shadow-purple-500/20 transition-all active:scale-[0.98]"
-                                    >
-                                        Suivant →
-                                    </button>
-                                )}
+
+                                    {duel.currentQuestionIndex === totalQ - 1 ? (
+                                        <button
+                                            onClick={handleSubmit}
+                                            disabled={answeredCount < totalQ}
+                                            className="px-4 sm:px-6 py-2.5 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-sm sm:text-base font-semibold shadow-lg shadow-green-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+                                        >
+                                            Valider ✓
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => duel.setCurrentQuestionIndex(duel.currentQuestionIndex + 1)}
+                                            className="px-4 sm:px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm sm:text-base font-medium shadow-lg shadow-purple-500/20 transition-all active:scale-[0.98]"
+                                        >
+                                            Suivant →
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
