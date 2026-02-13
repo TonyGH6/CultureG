@@ -61,6 +61,68 @@ export async function expireStaleduels(): Promise<number> {
     return total;
 }
 
+/**
+ * Find a user's active duel (WAITING or ONGOING).
+ * Used for reconnection after page refresh / disconnect.
+ */
+export async function getActiveDuel(params: {
+    userId: string;
+}): Promise<ServiceResult<{ duel: any } | null>> {
+    const { userId } = params;
+
+    const duel = await prisma.duel.findFirst({
+        where: {
+            status: { in: ["WAITING", "ONGOING"] },
+            players: { some: { userId } },
+        },
+        select: {
+            id: true,
+            theme: true,
+            status: true,
+            createdAt: true,
+            startedAt: true,
+            players: { select: { userId: true, joinedAt: true } },
+            questions: {
+                orderBy: { orderIndex: "asc" },
+                select: {
+                    orderIndex: true,
+                    question: {
+                        select: {
+                            id: true,
+                            slug: true,
+                            prompt: true,
+                            imageUrl: true,
+                            options: {
+                                select: { id: true, label: true, orderIndex: true },
+                                orderBy: { orderIndex: "asc" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+
+    if (!duel) return ok(null);
+
+    // Check if this user already submitted answers
+    const alreadySubmitted = await prisma.duelAnswer.findFirst({
+        where: { duelId: duel.id, playerUserId: userId },
+    });
+
+    return ok({
+        duel: {
+            ...duel,
+            alreadySubmitted: !!alreadySubmitted,
+            questions: duel.questions.map((dq) => ({
+                orderIndex: dq.orderIndex,
+                ...dq.question,
+            })),
+        },
+    });
+}
+
 export async function createWaitingDuel(params: {
     userId: string;
     theme: string;

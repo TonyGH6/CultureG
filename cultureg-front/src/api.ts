@@ -61,6 +61,18 @@ export type SubmitMatchResp = {
     }[];
 };
 
+export type ActiveDuelResp = {
+    ok: true;
+    duel: {
+        id: string;
+        theme: string;
+        status: "WAITING" | "ONGOING";
+        alreadySubmitted: boolean;
+        players: { userId: string; joinedAt: string }[];
+        questions: DuelQuestion[];
+    };
+} | { ok: true; duel: null };
+
 export async function api<T>(path: string, opts: RequestInit & { token?: string } = {}): Promise<T> {
     const headers = new Headers(opts.headers);
     headers.set("Accept", "application/json");

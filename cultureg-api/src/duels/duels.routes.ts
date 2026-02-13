@@ -7,6 +7,17 @@ import * as duelService from "./duels.service";
 
 export const duelsRouter = Router();
 
+// Check for active duel (reconnection)
+duelsRouter.get(
+    "/active",
+    requireAuth,
+    asyncHandler(async (req: AuthRequest, res) => {
+        const result = await duelService.getActiveDuel({ userId: req.userId! });
+        if (!result.ok) return res.status(result.status).json({ error: result.error });
+        return res.json(result);
+    })
+);
+
 duelsRouter.get(
     "/:duelId",
     requireAuth,

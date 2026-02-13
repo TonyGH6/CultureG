@@ -3,7 +3,7 @@ import { useAuth } from "./hooks/useAuth";
 import { useSocket } from "./hooks/useSocket";
 import { useDuelGame } from "./hooks/useDuelGame";
 import { useSoloMatch } from "./hooks/useSoloMatch";
-import { api, type QueueJoinResp } from "./api";
+import { api, type QueueJoinResp, type ActiveDuelResp } from "./api";
 
 /* ───────────────────── tiny icon components ───────────────────── */
 function IconBrain() {
@@ -76,12 +76,46 @@ export default function App() {
     // cleanup
     useEffect(() => () => socket.disconnect(), [socket.disconnect]);
 
+    /* ── reconnection: check for active duel after login ── */
+    async function checkActiveDuel() {
+        try {
+            const resp = await api<ActiveDuelResp>("/duels/active", { method: "GET", token: auth.token });
+            if (!resp.duel) return; // no active duel
+
+            pushLog(`🔄 Active duel found: ${resp.duel.id} (${resp.duel.status})`);
+            duel.setDuelId(resp.duel.id);
+
+            // Setup WS listeners & join room
+            setupSocketListeners();
+            setTimeout(() => socket.joinDuelRoom(resp.duel!.id), 300);
+
+            if (resp.duel.status === "WAITING") {
+                setScreen("queue");
+            } else if (resp.duel.status === "ONGOING") {
+                if (resp.duel.alreadySubmitted) {
+                    // Already submitted, wait for opponent
+                    await duel.refreshDuel(resp.duel.id);
+                    duel.setSubmittedFlag(true);
+                    setScreen("waiting-results");
+                } else {
+                    // Resume answering
+                    await duel.refreshDuel(resp.duel.id);
+                    setScreen("duel");
+                }
+            }
+        } catch (e: any) {
+            pushLog(`Reconnection check failed: ${e?.message}`);
+        }
+    }
+
     /* ── login ── */
     async function handleLogin() {
         setError("");
         try {
             await auth.login(email, password);
             setScreen("lobby");
+            // Check for active duel after login
+            setTimeout(() => checkActiveDuel(), 500);
         } catch (err: any) {
             const msg = err.message ?? "Login failed";
             if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
@@ -111,6 +145,7 @@ export default function App() {
             // auto-login after register
             await auth.login(email, password);
             setScreen("lobby");
+            setTimeout(() => checkActiveDuel(), 500);
         } catch (err: any) {
             const msg = err.message ?? "Registration failed";
             if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError")) {

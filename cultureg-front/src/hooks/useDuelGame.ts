@@ -61,6 +61,8 @@ export function useDuelGame(token: string, onLog: (msg: string) => void) {
         }
     }, [duelId, token, duelQuestions, answers, onLog]);
 
+    const setSubmittedFlag = useCallback((val: boolean) => setSubmitted(val), []);
+
     const resetDuel = useCallback(() => {
         setDuelId("");
         setDuelStatus("");
@@ -84,6 +86,7 @@ export function useDuelGame(token: string, onLog: (msg: string) => void) {
         answers,
         selectAnswer,
         submitted,
+        setSubmittedFlag,
         refreshDuel,
         submitAnswers,
         resetDuel,
