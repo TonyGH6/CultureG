@@ -4,6 +4,8 @@ import type { AuthRequest } from "../middleware/auth";
 import { asyncHandler } from "../middleware/errorHandler";
 import { submitDuelSchema } from "./duels.validators";
 import * as duelService from "./duels.service";
+import { enqueueWaiting } from "../queue/matchmaking.memory";
+import { prisma } from "../shared/prisma";
 
 export const duelsRouter = Router();
 
@@ -14,6 +16,22 @@ duelsRouter.get(
     asyncHandler(async (req: AuthRequest, res) => {
         const result = await duelService.getActiveDuel({ userId: req.userId! });
         if (!result.ok) return res.status(result.status).json({ error: result.error });
+
+        // If the duel is WAITING, re-enqueue in memory so opponents can still find us
+        const duel = (result as any).duel;
+        if (duel?.status === "WAITING") {
+            const user = await prisma.user.findUnique({
+                where: { id: req.userId! },
+                select: { elo: true },
+            });
+            enqueueWaiting({
+                userId: req.userId!,
+                theme: duel.theme,
+                elo: user?.elo ?? 1000,
+                duelId: duel.id,
+            });
+        }
+
         return res.json(result);
     })
 );

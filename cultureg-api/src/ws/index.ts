@@ -21,6 +21,9 @@ export function initWebsocket(httpServer: HttpServer) {
         const userId = socket.data.userId as string;
         logger.info({ socketId: socket.id, userId }, "WS connected");
 
+        // Personal room so we can push events to a specific user
+        socket.join(`user:${userId}`);
+
         socket.on("duel:join", async (payload: { duelId: string }) => {
             const duelId = String(payload?.duelId ?? "");
             if (!duelId) return;

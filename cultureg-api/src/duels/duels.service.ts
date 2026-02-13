@@ -201,8 +201,19 @@ export async function joinAndStartDuel(params: {
         }),
     ]);
 
-    // Notify AFTER commit
-    io?.to(`duel:${duelId}`).emit("duel:started", { duelId, theme });
+    // Notify AFTER commit — emit to the room AND directly to each player's
+    // personal sockets (in case player-1 hasn't joined the room yet due to timing).
+    const startPayload = { duelId, theme };
+    io?.to(`duel:${duelId}`).emit("duel:started", startPayload);
+
+    // Also emit to user-specific rooms so no one misses it
+    const allPlayers = await prisma.duelPlayer.findMany({
+        where: { duelId },
+        select: { userId: true },
+    });
+    for (const p of allPlayers) {
+        io?.to(`user:${p.userId}`).emit("duel:started", startPayload);
+    }
 
     return ok({ duelId });
 }
