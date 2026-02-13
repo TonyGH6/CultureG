@@ -2,12 +2,21 @@ import { Router } from "express";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import rateLimit from "express-rate-limit";
 import { prisma } from "../shared/prisma";
 import { env } from "../env";
 import { requireAuth, type AuthRequest } from "../middleware/auth";
 import { asyncHandler } from "../middleware/errorHandler";
 
 export const authRouter = Router();
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // 5 requests per window
+    message: "Too many authentication attempts, please try again later",
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 const registerSchema = z.object({
     email: z.string().email(),
@@ -17,6 +26,7 @@ const registerSchema = z.object({
 
 authRouter.post(
     "/register",
+    authLimiter,
     asyncHandler(async (req, res) => {
         const parsed = registerSchema.safeParse(req.body);
         if (!parsed.success) {
@@ -47,6 +57,7 @@ const loginSchema = z.object({
 
 authRouter.post(
     "/login",
+    authLimiter,
     asyncHandler(async (req, res) => {
         const parsed = loginSchema.safeParse(req.body);
         if (!parsed.success) {

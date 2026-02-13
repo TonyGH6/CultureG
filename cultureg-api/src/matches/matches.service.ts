@@ -69,7 +69,14 @@ export async function submitMatch({ userId, matchId, answers }: SubmitMatchInput
     eloBefore: number;
     eloAfter: number;
     eloDelta: number;
-    details: { questionId: string; isCorrect: boolean }[];
+    details: {
+        questionId: string;
+        prompt: string;
+        isCorrect: boolean;
+        userAnswerId: string;
+        correctAnswerId: string;
+        options: { id: string; label: string; isCorrect: boolean }[];
+    }[];
 }>> {
     const match = await prisma.match.findFirst({
         where: { id: matchId, userId },
@@ -87,20 +94,51 @@ export async function submitMatch({ userId, matchId, answers }: SubmitMatchInput
         }
     }
 
-    // Server-side scoring
-    const optionIds = answers.map((a) => a.optionId);
-    const options = await prisma.questionOption.findMany({
-        where: { id: { in: optionIds } },
-        select: { id: true, isCorrect: true },
+    // Fetch full question data with options
+    const questions = await prisma.question.findMany({
+        where: { id: { in: Array.from(allowedQuestionIds) } },
+        include: {
+            options: {
+                select: { id: true, label: true, isCorrect: true, orderIndex: true },
+                orderBy: { orderIndex: "asc" },
+            },
+        },
     });
 
-    const correctnessByOptionId = new Map(options.map((o) => [o.id, o.isCorrect]));
+    const questionMap = new Map(questions.map((q) => [q.id, q]));
     let score = 0;
 
     const details = answers.map((a) => {
-        const isCorrect = correctnessByOptionId.get(a.optionId) === true;
+        const question = questionMap.get(a.questionId);
+        if (!question) {
+            return {
+                questionId: a.questionId,
+                prompt: "Question not found",
+                isCorrect: false,
+                userAnswerId: a.optionId,
+                correctAnswerId: "",
+                options: [],
+            };
+        }
+
+        const correctOption = question.options.find((opt) => opt.isCorrect);
+        const userOption = question.options.find((opt) => opt.id === a.optionId);
+        const isCorrect = userOption?.isCorrect === true;
+
         if (isCorrect) score += 1;
-        return { questionId: a.questionId, isCorrect };
+
+        return {
+            questionId: a.questionId,
+            prompt: question.prompt,
+            isCorrect,
+            userAnswerId: a.optionId,
+            correctAnswerId: correctOption?.id ?? "",
+            options: question.options.map((opt) => ({
+                id: opt.id,
+                label: opt.label,
+                isCorrect: opt.isCorrect,
+            })),
+        };
     });
 
     const total = match.questions.length;

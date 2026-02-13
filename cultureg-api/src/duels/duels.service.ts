@@ -277,6 +277,13 @@ export async function submitDuelAnswers(params: {
     const allSubmitted = playersWithScores.every((p) => p.score !== null);
 
     if (allSubmitted) {
+        // Determine winner
+        const sortedByScore = [...playersWithScores].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+        const topScore = sortedByScore[0].score ?? 0;
+        const winnersCount = sortedByScore.filter((p) => p.score === topScore).length;
+        const isDraw = winnersCount > 1;
+        const winnerId = isDraw ? null : sortedByScore[0].userId;
+
         await prisma.duel.update({
             where: { id: duelId },
             data: { status: "FINISHED", finishedAt: new Date() },
@@ -285,6 +292,8 @@ export async function submitDuelAnswers(params: {
         io?.to(`duel:${duelId}`).emit("duel:finished", {
             duelId,
             players: playersWithScores,
+            winnerId,
+            isDraw,
         });
     }
 

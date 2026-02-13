@@ -6,8 +6,19 @@ import { matchesRouter } from "./matches/matches.routes";
 import { queueRouter } from "./queue/queue.routes";
 import { duelsRouter } from "./duels/duels.routes";
 import { errorHandler } from "./middleware/errorHandler";
+import { env } from "./env";
 
 export const app = express();
+
+// Force HTTPS in production
+if (env.NODE_ENV === "production") {
+    app.use((req, res, next) => {
+        if (req.header("x-forwarded-proto") !== "https") {
+            return res.redirect(`https://${req.header("host")}${req.url}`);
+        }
+        next();
+    });
+}
 
 app.use(cors());
 app.use(express.json());

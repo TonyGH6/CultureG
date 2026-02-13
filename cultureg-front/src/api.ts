@@ -28,6 +28,38 @@ export type DuelResp = {
     };
 };
 
+export type SoloMatchQuestion = {
+    id: string;
+    slug: string;
+    prompt: string;
+    options: { id: string; label: string; orderIndex: number }[];
+};
+
+export type StartMatchResp = {
+    ok: true;
+    matchId: string;
+    theme: string;
+    questions: SoloMatchQuestion[];
+};
+
+export type SubmitMatchResp = {
+    ok: true;
+    matchId: string;
+    score: number;
+    total: number;
+    eloBefore: number;
+    eloAfter: number;
+    eloDelta: number;
+    details: {
+        questionId: string;
+        prompt: string;
+        isCorrect: boolean;
+        userAnswerId: string;
+        correctAnswerId: string;
+        options: { id: string; label: string; isCorrect: boolean }[];
+    }[];
+};
+
 export async function api<T>(path: string, opts: RequestInit & { token?: string } = {}): Promise<T> {
     const headers = new Headers(opts.headers);
     headers.set("Accept", "application/json");

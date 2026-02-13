@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useAuth } from "./hooks/useAuth";
 import { useSocket } from "./hooks/useSocket";
 import { useDuelGame } from "./hooks/useDuelGame";
+import { useSoloMatch } from "./hooks/useSoloMatch";
 import { api, type QueueJoinResp } from "./api";
 
 /* ───────────────────── tiny icon components ───────────────────── */
@@ -31,7 +32,7 @@ function IconSwords() {
 }
 
 /* ───────────────────── screens ───────────────────── */
-type Screen = "login" | "lobby" | "queue" | "duel" | "results";
+type Screen = "login" | "lobby" | "queue" | "duel" | "waiting-results" | "results" | "solo" | "solo-results";
 
 export default function App() {
     const [email, setEmail] = useState("");
@@ -42,6 +43,8 @@ export default function App() {
     const [screen, setScreen] = useState<Screen>("login");
     const [error, setError] = useState("");
     const [scoreResult, setScoreResult] = useState<{ score: number; total: number } | null>(null);
+    const [duelResult, setDuelResult] = useState<{ winnerId: string | null; isDraw: boolean; players: { userId: string; score: number | null }[] } | null>(null);
+    const duelFinishedRef = useRef(false);
     const [log, setLog] = useState<string[]>([]);
     const [showLogs, setShowLogs] = useState(false);
 
@@ -54,6 +57,7 @@ export default function App() {
     const auth = useAuth();
     const socket = useSocket(auth.token, pushLog);
     const duel = useDuelGame(auth.token, pushLog);
+    const solo = useSoloMatch(auth.token);
 
     // cleanup
     useEffect(() => () => socket.disconnect(), [socket.disconnect]);
@@ -65,7 +69,12 @@ export default function App() {
             await auth.login(email, password);
             setScreen("lobby");
         } catch (err: any) {
-            setError(err.message ?? "Login failed");
+            const msg = err.message ?? "Login failed";
+            if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
+                setError("⚠️ Impossible de contacter le serveur. Vérifie ta connexion.");
+            } else {
+                setError(msg);
+            }
         }
     }
 
@@ -89,7 +98,12 @@ export default function App() {
             await auth.login(email, password);
             setScreen("lobby");
         } catch (err: any) {
-            setError(err.message ?? "Registration failed");
+            const msg = err.message ?? "Registration failed";
+            if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
+                setError("⚠️ Impossible de contacter le serveur. Vérifie ta connexion.");
+            } else {
+                setError(msg);
+            }
         }
     }
 
@@ -111,7 +125,17 @@ export default function App() {
 
         s.on("duel:finished", (msg: any) => {
             pushLog(`WS duel:finished ${JSON.stringify(msg)}`);
-            if (msg?.duelId) void duel.refreshDuel(String(msg.duelId));
+            if (msg?.duelId) {
+                duelFinishedRef.current = true;
+                setDuelResult({
+                    winnerId: msg.winnerId ?? null,
+                    isDraw: msg.isDraw ?? false,
+                    players: msg.players ?? [],
+                });
+                void duel.refreshDuel(String(msg.duelId));
+                // Navigate to results when duel is finished (handles waiting-results → results)
+                setScreen("results");
+            }
         });
 
         s.on("duel:expired", (msg: any) => {
@@ -156,6 +180,26 @@ export default function App() {
         }
     }
 
+    /* ── solo match ── */
+    async function startSoloMatch() {
+        setError("");
+        try {
+            await solo.startMatch(theme, 5);
+            setScreen("solo");
+        } catch (e: any) {
+            setError(e?.message ?? "Failed to start solo match");
+        }
+    }
+
+    async function submitSoloMatch() {
+        try {
+            await solo.submitMatch();
+            setScreen("solo-results");
+        } catch (e: any) {
+            setError(e?.message ?? "Submit error");
+        }
+    }
+
     /* ── submit ── */
     async function handleSubmit() {
         if (!duel.duelId || !auth.token) return;
@@ -171,7 +215,9 @@ export default function App() {
                 body: JSON.stringify({ answers: answersList }),
             });
             setScoreResult({ score: resp.score, total: resp.total });
-            setScreen("results");
+            // If duel:finished WS already arrived (both players done), go straight to results.
+            // Otherwise wait for the opponent on the waiting screen.
+            setScreen(duelFinishedRef.current ? "results" : "waiting-results");
         } catch (e: any) {
             setError(e?.message ?? "Submit error");
         }
@@ -180,6 +226,8 @@ export default function App() {
     function playAgain() {
         duel.resetDuel();
         setScoreResult(null);
+        setDuelResult(null);
+        duelFinishedRef.current = false;
         setError("");
         setScreen("lobby");
     }
@@ -252,34 +300,37 @@ export default function App() {
                             <div className="space-y-4">
                                 {isRegistering && (
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-400 mb-1.5">Pseudo</label>
+                                        <label htmlFor="username" className="block text-sm font-medium text-gray-400 mb-1.5">Pseudo</label>
                                         <input
+                                            id="username"
                                             type="text"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
-                                            className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                            className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                                             placeholder="Ton pseudo (min. 3 caractères)"
                                         />
                                     </div>
                                 )}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1.5">Email</label>
+                                    <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1.5">Email</label>
                                     <input
+                                        id="email"
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                        className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                                         placeholder="ton@email.com"
                                         onKeyDown={(e) => e.key === "Enter" && (isRegistering ? handleRegister() : handleLogin())}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1.5">Mot de passe</label>
+                                    <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-1.5">Mot de passe</label>
                                     <input
+                                        id="password"
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                        className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                                         placeholder={isRegistering ? "Min. 8 caractères" : "••••••••"}
                                         onKeyDown={(e) => e.key === "Enter" && (isRegistering ? handleRegister() : handleLogin())}
                                     />
@@ -345,6 +396,14 @@ export default function App() {
                             >
                                 <IconSwords />
                                 Lancer un duel
+                            </button>
+
+                            <button
+                                onClick={startSoloMatch}
+                                className="mt-4 w-full py-4 text-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl border border-gray-700 hover:border-purple-500/50 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
+                            >
+                                <IconBrain />
+                                Jouer seul
                             </button>
 
                             <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
@@ -502,39 +561,118 @@ export default function App() {
                     </div>
                 )}
 
+                {/* ─── WAITING FOR OPPONENT ─── */}
+                {screen === "waiting-results" && scoreResult && (
+                    <div className="w-full max-w-md">
+                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl text-center">
+                            <div className="text-6xl mb-4 animate-bounce">⏳</div>
+                            <h2 className="text-2xl font-bold text-white mb-3">Réponses envoyées !</h2>
+                            <p className="text-gray-400 mb-6">
+                                Ton score : <span className="text-purple-400 font-bold">{scoreResult.score} / {scoreResult.total}</span>
+                            </p>
+                            <p className="text-gray-500 text-sm">En attente de ton adversaire…</p>
+                            <div className="mt-6 flex justify-center">
+                                <div className="flex gap-1">
+                                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: "0s" }} />
+                                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
+                                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* ─── RESULTS ─── */}
                 {screen === "results" && scoreResult && (
                     <div className="w-full max-w-md">
                         <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl text-center">
-                            <div className="mb-6">
-                                {scoreResult.score >= scoreResult.total * 0.7 ? (
-                                    <div className="text-6xl mb-2">🎉</div>
-                                ) : scoreResult.score >= scoreResult.total * 0.4 ? (
-                                    <div className="text-6xl mb-2">👏</div>
-                                ) : (
-                                    <div className="text-6xl mb-2">💪</div>
-                                )}
-                            </div>
-
-                            <h2 className="text-3xl font-bold text-white mb-2">Résultats</h2>
-
-                            <div className="my-8">
-                                <div className="inline-flex items-baseline gap-1">
-                                    <span className="text-6xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                                        {scoreResult.score}
-                                    </span>
-                                    <span className="text-2xl text-gray-500">/ {scoreResult.total}</span>
+                            {/* Winner/Loser/Draw display */}
+                            {duelResult && (
+                                <div className="mb-6">
+                                    {duelResult.isDraw ? (
+                                        <>
+                                            <div className="text-6xl mb-2">🤝</div>
+                                            <h2 className="text-3xl font-bold text-yellow-400 mb-2">Égalité !</h2>
+                                        </>
+                                    ) : duelResult.winnerId === auth.userId ? (
+                                        <>
+                                            <div className="text-6xl mb-2">🏆</div>
+                                            <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent mb-2">
+                                                Victoire !
+                                            </h2>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="text-6xl mb-2">😔</div>
+                                            <h2 className="text-3xl font-bold text-red-400 mb-2">Défaite</h2>
+                                        </>
+                                    )}
                                 </div>
-                                <p className="text-gray-400 mt-2">
-                                    {scoreResult.score === scoreResult.total
-                                        ? "Score parfait ! 🔥"
-                                        : scoreResult.score >= scoreResult.total * 0.7
-                                          ? "Excellent !"
-                                          : scoreResult.score >= scoreResult.total * 0.4
-                                            ? "Pas mal, tu peux faire mieux !"
-                                            : "Continue à t'entraîner !"}
-                                </p>
-                            </div>
+                            )}
+
+                            {!duelResult && (
+                                <div className="mb-6">
+                                    {scoreResult.score >= scoreResult.total * 0.7 ? (
+                                        <div className="text-6xl mb-2">🎉</div>
+                                    ) : scoreResult.score >= scoreResult.total * 0.4 ? (
+                                        <div className="text-6xl mb-2">👏</div>
+                                    ) : (
+                                        <div className="text-6xl mb-2">💪</div>
+                                    )}
+                                    <h2 className="text-3xl font-bold text-white mb-2">Résultats</h2>
+                                </div>
+                            )}
+
+                            {/* Scores comparison for duel */}
+                            {duelResult && duelResult.players.length === 2 && (
+                                <div className="mb-6 space-y-3">
+                                    {duelResult.players.map((player) => {
+                                        const isCurrentUser = player.userId === auth.userId;
+                                        const isWinner = player.userId === duelResult.winnerId;
+                                        return (
+                                            <div
+                                                key={player.userId}
+                                                className={`px-4 py-3 rounded-lg flex items-center justify-between ${
+                                                    isWinner
+                                                        ? "bg-yellow-500/10 border border-yellow-500/30"
+                                                        : "bg-gray-800/50 border border-gray-700"
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    {isWinner && <span className="text-yellow-400">👑</span>}
+                                                    <span className={`font-semibold ${isCurrentUser ? "text-purple-400" : "text-gray-300"}`}>
+                                                        {isCurrentUser ? "Toi" : "Adversaire"}
+                                                    </span>
+                                                </div>
+                                                <span className="text-2xl font-bold text-white">
+                                                    {player.score ?? 0} / {scoreResult.total}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+
+                            {/* Your score */}
+                            {!duelResult && (
+                                <div className="my-8">
+                                    <div className="inline-flex items-baseline gap-1">
+                                        <span className="text-6xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                            {scoreResult.score}
+                                        </span>
+                                        <span className="text-2xl text-gray-500">/ {scoreResult.total}</span>
+                                    </div>
+                                    <p className="text-gray-400 mt-2">
+                                        {scoreResult.score === scoreResult.total
+                                            ? "Score parfait ! 🔥"
+                                            : scoreResult.score >= scoreResult.total * 0.7
+                                              ? "Excellent !"
+                                              : scoreResult.score >= scoreResult.total * 0.4
+                                                ? "Pas mal, tu peux faire mieux !"
+                                                : "Continue à t'entraîner !"}
+                                    </p>
+                                </div>
+                            )}
 
                             <div className="flex items-center justify-center gap-2 text-yellow-400 mb-8">
                                 <IconTrophy />
@@ -546,6 +684,186 @@ export default function App() {
                                 className="w-full py-4 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 active:scale-[0.98]"
                             >
                                 Rejouer
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ─── SOLO MATCH GAMEPLAY ─── */}
+                {screen === "solo" && solo.questions.length > 0 && (
+                    <div className="w-full max-w-2xl">
+                        {/* progress bar */}
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-medium text-gray-400">
+                                    Question {solo.currentQuestionIndex + 1} / {solo.questions.length}
+                                </span>
+                                <span className="text-sm text-gray-500">
+                                    {Object.keys(solo.answers).length} / {solo.questions.length} répondue(s)
+                                </span>
+                            </div>
+                            <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500 ease-out"
+                                    style={{ width: `${((solo.currentQuestionIndex + 1) / solo.questions.length) * 100}%` }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* question card */}
+                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl">
+                            <h3 className="text-xl font-semibold text-white mb-6 leading-relaxed">
+                                {solo.questions[solo.currentQuestionIndex].prompt}
+                            </h3>
+
+                            <div className="space-y-3">
+                                {solo.questions[solo.currentQuestionIndex].options.map((opt) => {
+                                    const isSelected = solo.answers[solo.questions[solo.currentQuestionIndex].id] === opt.id;
+                                    return (
+                                        <button
+                                            key={opt.id}
+                                            onClick={() => solo.selectAnswer(solo.questions[solo.currentQuestionIndex].id, opt.id)}
+                                            className={`w-full text-left px-6 py-4 rounded-xl border-2 transition-all duration-200 ${
+                                                isSelected
+                                                    ? "bg-purple-500/20 border-purple-500 text-white shadow-lg shadow-purple-500/20"
+                                                    : "bg-gray-800/50 border-gray-700 text-gray-300 hover:border-purple-500/50 hover:bg-gray-800"
+                                            }`}
+                                        >
+                                            <span className="font-medium">{opt.label}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* navigation */}
+                            <div className="mt-8 flex items-center justify-between gap-4">
+                                <button
+                                    onClick={() => solo.setCurrentQuestionIndex(Math.max(0, solo.currentQuestionIndex - 1))}
+                                    disabled={solo.currentQuestionIndex === 0}
+                                    className="px-6 py-3 bg-gray-800 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed text-gray-300 font-medium rounded-xl border border-gray-700 transition-all"
+                                >
+                                    ← Précédent
+                                </button>
+
+                                {solo.currentQuestionIndex < solo.questions.length - 1 ? (
+                                    <button
+                                        onClick={() => solo.setCurrentQuestionIndex(solo.currentQuestionIndex + 1)}
+                                        className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition-all"
+                                    >
+                                        Suivant →
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={submitSoloMatch}
+                                        disabled={Object.keys(solo.answers).length < solo.questions.length}
+                                        className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all"
+                                    >
+                                        Valider mes réponses
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* ─── SOLO RESULTS ─── */}
+                {screen === "solo-results" && solo.result && (
+                    <div className="w-full max-w-lg">
+                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl">
+                            <div className="text-center mb-8">
+                                <div className="mb-4">
+                                    {solo.result.score >= solo.result.total * 0.7 ? (
+                                        <div className="text-6xl">🎉</div>
+                                    ) : solo.result.score >= solo.result.total * 0.4 ? (
+                                        <div className="text-6xl">👏</div>
+                                    ) : (
+                                        <div className="text-6xl">💪</div>
+                                    )}
+                                </div>
+
+                                <h2 className="text-3xl font-bold text-white mb-2">Résultats</h2>
+
+                                <div className="my-6">
+                                    <div className="inline-flex items-baseline gap-1">
+                                        <span className="text-6xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                            {solo.result.score}
+                                        </span>
+                                        <span className="text-2xl text-gray-500">/ {solo.result.total}</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-center gap-6 text-sm">
+                                    <div className="flex items-center gap-2 text-gray-400">
+                                        <span>Elo avant :</span>
+                                        <span className="font-semibold text-white">{solo.result.eloBefore}</span>
+                                    </div>
+                                    <div className={`flex items-center gap-1 font-bold ${solo.result.eloDelta >= 0 ? "text-green-400" : "text-red-400"}`}>
+                                        {solo.result.eloDelta >= 0 ? "+" : ""}{solo.result.eloDelta}
+                                    </div>
+                                    <div className="flex items-center gap-2 text-gray-400">
+                                        <span>Elo après :</span>
+                                        <span className="font-semibold text-yellow-400">{solo.result.eloAfter}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* detailed answers */}
+                            <div className="mb-6 space-y-4">
+                                <h3 className="text-sm font-semibold text-gray-400 mb-3">Correction détaillée</h3>
+                                {solo.result.details.map((detail, idx) => (
+                                    <div
+                                        key={detail.questionId}
+                                        className={`border rounded-xl p-4 ${
+                                            detail.isCorrect
+                                                ? "bg-green-500/5 border-green-500/30"
+                                                : "bg-red-500/5 border-red-500/30"
+                                        }`}
+                                    >
+                                        <div className="flex items-start gap-3 mb-3">
+                                            <span className={`text-2xl ${detail.isCorrect ? "text-green-400" : "text-red-400"}`}>
+                                                {detail.isCorrect ? "✓" : "✗"}
+                                            </span>
+                                            <div className="flex-1">
+                                                <div className="text-xs text-gray-500 mb-1">Question {idx + 1}</div>
+                                                <p className="text-sm text-white font-medium leading-relaxed">{detail.prompt}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2 ml-8">
+                                            {detail.options.map((opt) => {
+                                                const isUserAnswer = opt.id === detail.userAnswerId;
+                                                const isCorrectAnswer = opt.id === detail.correctAnswerId;
+
+                                                return (
+                                                    <div
+                                                        key={opt.id}
+                                                        className={`text-sm px-3 py-2 rounded-lg ${
+                                                            isCorrectAnswer
+                                                                ? "bg-green-500/20 text-green-300 font-semibold"
+                                                                : isUserAnswer
+                                                                  ? "bg-red-500/20 text-red-300"
+                                                                  : "bg-gray-800/50 text-gray-400"
+                                                        }`}
+                                                    >
+                                                        {opt.label}
+                                                        {isCorrectAnswer && <span className="ml-2">✓ Bonne réponse</span>}
+                                                        {isUserAnswer && !isCorrectAnswer && <span className="ml-2">✗ Votre réponse</span>}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button
+                                onClick={() => {
+                                    solo.resetMatch();
+                                    setScreen("lobby");
+                                }}
+                                className="w-full py-4 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 active:scale-[0.98]"
+                            >
+                                Retour au lobby
                             </button>
                         </div>
                     </div>
