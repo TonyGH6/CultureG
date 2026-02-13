@@ -2,6 +2,24 @@ import { useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { API_BASE } from "../api";
 
+/**
+ * Derive the Socket.IO connection URL and path from API_BASE.
+ * API_BASE might be "http://host/api" in production (behind nginx)
+ * or "http://localhost:3000" in development.
+ *
+ * Socket.IO needs:
+ *  - url  = origin only  (e.g. "http://host")
+ *  - path = "/api/socket.io/"  (so nginx routes it correctly)
+ */
+function getSocketConfig() {
+    const url = new URL(API_BASE);
+    const base = url.pathname.replace(/\/+$/, ""); // e.g. "/api" or ""
+    return {
+        url: url.origin,
+        path: base ? `${base}/socket.io/` : "/socket.io/",
+    };
+}
+
 export function useSocket(token: string, onLog: (msg: string) => void) {
     const socketRef = useRef<Socket | null>(null);
 
@@ -9,8 +27,12 @@ export function useSocket(token: string, onLog: (msg: string) => void) {
         if (!token) throw new Error("No token");
         if (socketRef.current?.connected) return socketRef.current;
 
-        const s = io(API_BASE, {
+        const { url, path } = getSocketConfig();
+        onLog(`WS connecting to ${url} path=${path}`);
+
+        const s = io(url, {
             auth: { token },
+            path,
             transports: ["websocket"],
         });
 
