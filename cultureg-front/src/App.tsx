@@ -77,36 +77,41 @@ export default function App() {
     useEffect(() => () => socket.disconnect(), [socket.disconnect]);
 
     /* ── reconnection: check for active duel after login ── */
-    async function checkActiveDuel() {
-        try {
-            const resp = await api<ActiveDuelResp>("/duels/active", { method: "GET", token: auth.token });
-            if (!resp.duel) return; // no active duel
+    const reconnectCheckedRef = useRef(false);
 
-            pushLog(`🔄 Active duel found: ${resp.duel.id} (${resp.duel.status})`);
-            duel.setDuelId(resp.duel.id);
+    useEffect(() => {
+        if (!auth.token || reconnectCheckedRef.current) return;
+        reconnectCheckedRef.current = true;
 
-            // Setup WS listeners & join room
-            setupSocketListeners();
-            setTimeout(() => socket.joinDuelRoom(resp.duel!.id), 300);
+        (async () => {
+            try {
+                const resp = await api<ActiveDuelResp>("/duels/active", { method: "GET", token: auth.token });
+                if (!resp.duel) return; // no active duel
 
-            if (resp.duel.status === "WAITING") {
-                setScreen("queue");
-            } else if (resp.duel.status === "ONGOING") {
-                if (resp.duel.alreadySubmitted) {
-                    // Already submitted, wait for opponent
-                    await duel.refreshDuel(resp.duel.id);
-                    duel.setSubmittedFlag(true);
-                    setScreen("waiting-results");
-                } else {
-                    // Resume answering
-                    await duel.refreshDuel(resp.duel.id);
-                    setScreen("duel");
+                pushLog(`🔄 Active duel found: ${resp.duel.id} (${resp.duel.status})`);
+                duel.setDuelId(resp.duel.id);
+
+                // Setup WS listeners & join room
+                setupSocketListeners();
+                setTimeout(() => socket.joinDuelRoom(resp.duel!.id), 300);
+
+                if (resp.duel.status === "WAITING") {
+                    setScreen("queue");
+                } else if (resp.duel.status === "ONGOING") {
+                    if (resp.duel.alreadySubmitted) {
+                        await duel.refreshDuel(resp.duel.id);
+                        duel.setSubmittedFlag(true);
+                        setScreen("waiting-results");
+                    } else {
+                        await duel.refreshDuel(resp.duel.id);
+                        setScreen("duel");
+                    }
                 }
+            } catch (e: any) {
+                pushLog(`Reconnection check failed: ${e?.message}`);
             }
-        } catch (e: any) {
-            pushLog(`Reconnection check failed: ${e?.message}`);
-        }
-    }
+        })();
+    }, [auth.token]);
 
     /* ── login ── */
     async function handleLogin() {
@@ -114,8 +119,6 @@ export default function App() {
         try {
             await auth.login(email, password);
             setScreen("lobby");
-            // Check for active duel after login
-            setTimeout(() => checkActiveDuel(), 500);
         } catch (err: any) {
             const msg = err.message ?? "Login failed";
             if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
@@ -145,7 +148,6 @@ export default function App() {
             // auto-login after register
             await auth.login(email, password);
             setScreen("lobby");
-            setTimeout(() => checkActiveDuel(), 500);
         } catch (err: any) {
             const msg = err.message ?? "Registration failed";
             if (msg.includes("fetch") || msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
@@ -316,7 +318,7 @@ export default function App() {
                             {auth.username}
                         </div>
                         <button
-                            onClick={() => { auth.logout(); duel.resetDuel(); setScreen("login"); }}
+                            onClick={() => { auth.logout(); duel.resetDuel(); reconnectCheckedRef.current = false; setScreen("login"); }}
                             className="text-xs text-gray-500 hover:text-gray-300 transition"
                         >
                             Déconnexion
