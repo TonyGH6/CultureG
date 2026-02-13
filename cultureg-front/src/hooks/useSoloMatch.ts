@@ -11,7 +11,7 @@ export function useSoloMatch(token: string) {
     const [result, setResult] = useState<SubmitMatchResp | null>(null);
 
     const startMatch = useCallback(
-        async (selectedTheme: string, limit: number = 5) => {
+        async (selectedTheme: string, limit: number = 10) => {
             const resp = await api<StartMatchResp>("/matches/start", {
                 method: "POST",
                 token,

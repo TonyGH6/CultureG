@@ -8,12 +8,17 @@ async function main() {
     for (const q of questions) {
         const result = await prisma.question.upsert({
             where: { slug: q.slug },
-            update: {},
+            update: {
+                explanation: q.explanation ?? null,
+                imageUrl: q.imageUrl ?? null,
+            },
             create: {
                 slug: q.slug,
                 theme: q.theme,
                 type: q.type as QuestionType,
                 prompt: q.prompt,
+                explanation: q.explanation ?? null,
+                imageUrl: q.imageUrl ?? null,
                 difficulty: q.difficulty,
                 options: {
                     create: q.options.map((o, i) => ({

@@ -33,5 +33,5 @@ export function useAuth() {
         setUsername("");
     }, []);
 
-    return { token, userId, elo, username, isAuthed, login, logout };
+    return { token, userId, elo, setElo, username, isAuthed, login, logout };
 }

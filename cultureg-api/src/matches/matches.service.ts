@@ -1,5 +1,4 @@
 import { prisma } from "../shared/prisma";
-import { eloDeltaSolo } from "./elo";
 import { ok, err, type ServiceResult } from "../shared/result";
 
 type StartMatchInput = {
@@ -57,6 +56,7 @@ export async function startMatch({ userId, theme, limit }: StartMatchInput): Pro
             id: q.id,
             slug: q.slug,
             prompt: q.prompt,
+            imageUrl: q.imageUrl,
             options: q.options,
         })),
     });
@@ -66,12 +66,11 @@ export async function submitMatch({ userId, matchId, answers }: SubmitMatchInput
     matchId: string;
     score: number;
     total: number;
-    eloBefore: number;
-    eloAfter: number;
-    eloDelta: number;
     details: {
         questionId: string;
         prompt: string;
+        explanation: string | null;
+        imageUrl: string | null;
         isCorrect: boolean;
         userAnswerId: string;
         correctAnswerId: string;
@@ -114,6 +113,8 @@ export async function submitMatch({ userId, matchId, answers }: SubmitMatchInput
             return {
                 questionId: a.questionId,
                 prompt: "Question not found",
+                explanation: null,
+                imageUrl: null,
                 isCorrect: false,
                 userAnswerId: a.optionId,
                 correctAnswerId: "",
@@ -130,6 +131,8 @@ export async function submitMatch({ userId, matchId, answers }: SubmitMatchInput
         return {
             questionId: a.questionId,
             prompt: question.prompt,
+            explanation: question.explanation ?? null,
+            imageUrl: question.imageUrl ?? null,
             isCorrect,
             userAnswerId: a.optionId,
             correctAnswerId: correctOption?.id ?? "",
@@ -142,15 +145,13 @@ export async function submitMatch({ userId, matchId, answers }: SubmitMatchInput
     });
 
     const total = match.questions.length;
-    const delta = eloDeltaSolo(score, total);
 
     const user = await prisma.user.findUnique({
         where: { id: userId },
         select: { elo: true },
     });
 
-    const eloBefore = user?.elo ?? 1000;
-    const eloAfter = Math.max(0, eloBefore + delta);
+    const currentElo = user?.elo ?? 1000;
 
     await prisma.$transaction([
         prisma.matchAnswer.createMany({
@@ -167,18 +168,14 @@ export async function submitMatch({ userId, matchId, answers }: SubmitMatchInput
             data: {
                 status: "FINISHED",
                 score,
-                eloBefore,
-                eloAfter,
+                eloBefore: currentElo,
+                eloAfter: currentElo,
                 finishedAt: new Date(),
             },
         }),
-        prisma.user.update({
-            where: { id: userId },
-            data: { elo: eloAfter },
-        }),
     ]);
 
-    return ok({ matchId, score, total, eloBefore, eloAfter, eloDelta: eloAfter - eloBefore, details });
+    return ok({ matchId, score, total, details });
 }
 
 export async function getMatchHistory(userId: string, limit: number) {

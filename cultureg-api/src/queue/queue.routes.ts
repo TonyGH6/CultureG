@@ -115,7 +115,7 @@ queueRouter.post(
             duelId: result.opponentDuelId,
             joinerUserId: req.userId!,
             theme: parsed.data.theme,
-            limit: 5,
+            limit: 10,
         });
 
         if (!started.ok) {

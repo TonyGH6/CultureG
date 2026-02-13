@@ -14,6 +14,7 @@ export type DuelQuestion = {
     id: string;
     slug: string;
     prompt: string;
+    imageUrl: string | null;
     options: { id: string; label: string; orderIndex: number }[];
 };
 
@@ -32,6 +33,7 @@ export type SoloMatchQuestion = {
     id: string;
     slug: string;
     prompt: string;
+    imageUrl: string | null;
     options: { id: string; label: string; orderIndex: number }[];
 };
 
@@ -47,12 +49,11 @@ export type SubmitMatchResp = {
     matchId: string;
     score: number;
     total: number;
-    eloBefore: number;
-    eloAfter: number;
-    eloDelta: number;
     details: {
         questionId: string;
         prompt: string;
+        explanation: string | null;
+        imageUrl: string | null;
         isCorrect: boolean;
         userAnswerId: string;
         correctAnswerId: string;

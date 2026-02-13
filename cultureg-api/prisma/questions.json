@@ -4,6 +4,7 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "Quelle est la capitale du Canada ?",
+    "explanation": "Ottawa est la capitale du Canada depuis 1857, choisie par la reine Victoria. Bien que Toronto et Montréal soient plus grandes, Ottawa a été préférée pour sa position géographique à la frontière entre l'Ontario anglophone et le Québec francophone.",
     "difficulty": 1,
     "options": [
       { "label": "Toronto", "isCorrect": false },
@@ -17,6 +18,7 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "Quel pays a été le premier à accorder le droit de vote aux femmes ?",
+    "explanation": "La Nouvelle-Zélande a accordé le droit de vote aux femmes en 1893, grâce notamment à la militante Kate Sheppard. L'Australie a suivi en 1902, la Finlande en 1906, et la France seulement en 1944.",
     "difficulty": 2,
     "options": [
       { "label": "États-Unis", "isCorrect": false },
@@ -30,6 +32,7 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "Quel est l'élément chimique le plus abondant dans l'univers ?",
+    "explanation": "L'hydrogène représente environ 75 % de la masse de l'univers visible. Formé lors du Big Bang, il est le carburant des étoiles via la fusion nucléaire, se transformant en hélium et libérant d'immenses quantités d'énergie.",
     "difficulty": 2,
     "options": [
       { "label": "Oxygène", "isCorrect": false },
@@ -43,6 +46,7 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "Dans quelle ville se trouve le siège de l'ONU ?",
+    "explanation": "Le siège des Nations unies est situé à New York, dans le quartier de Manhattan, sur un terrain de 7 hectares offert par John D. Rockefeller Jr. en 1946. Genève abrite le deuxième plus grand bureau de l'ONU.",
     "difficulty": 1,
     "options": [
       { "label": "Genève", "isCorrect": false },
@@ -56,6 +60,8 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "Quel peintre est l'auteur du tableau La Nuit étoilée ?",
+    "explanation": "La Nuit étoilée a été peinte par Vincent van Gogh en juin 1889, alors qu'il séjournait à l'asile de Saint-Rémy-de-Provence. Ce tableau, l'un des plus célèbres au monde, représente la vue depuis sa fenêtre avec un ciel tourbillonnant.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/600px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
     "difficulty": 1,
     "options": [
       { "label": "Pablo Picasso", "isCorrect": false },
@@ -69,6 +75,7 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "En quelle année a eu lieu la bataille d'Austerlitz ?",
+    "explanation": "La bataille d'Austerlitz (2 décembre 1805), surnommée « la bataille des trois empereurs », opposa Napoléon Ier aux empereurs d'Autriche et de Russie en Moravie (actuelle Tchéquie). Considérée comme le chef-d'œuvre tactique de Napoléon, elle mit fin à la Troisième Coalition.",
     "difficulty": 2,
     "options": [
       { "label": "1799", "isCorrect": false },
@@ -82,6 +89,7 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "Quel traité met officiellement fin à la Première Guerre mondiale ?",
+    "explanation": "Le traité de Versailles, signé le 28 juin 1919, impose à l'Allemagne des réparations financières, des pertes territoriales et une réduction de son armée. Jugé humiliant par les Allemands, il est souvent cité comme l'un des facteurs ayant contribué à la montée du nazisme.",
     "difficulty": 2,
     "options": [
       { "label": "Traité de Tordesillas", "isCorrect": false },
@@ -95,6 +103,7 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "Quel empereur romain a légalisé le christianisme ?",
+    "explanation": "Constantin Ier promulgua l'édit de Milan en 313, accordant la liberté de culte dans l'Empire romain et mettant fin aux persécutions des chrétiens. Il convoqua aussi le concile de Nicée en 325. C'est Théodose Ier qui fit du christianisme la religion officielle en 380.",
     "difficulty": 2,
     "options": [
       { "label": "Néron", "isCorrect": false },
@@ -108,6 +117,7 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "Quel était le nom du navire sur lequel Charles Darwin a voyagé lors de son expédition scientifique ?",
+    "explanation": "Le HMS Beagle a effectué un voyage de 5 ans (1831-1836) autour du monde. Les observations de Darwin, notamment aux îles Galápagos, furent déterminantes pour sa théorie de l'évolution par sélection naturelle, publiée dans « L'Origine des espèces » en 1859.",
     "difficulty": 2,
     "options": [
       { "label": "HMS Victory", "isCorrect": false },
@@ -121,12 +131,576 @@
     "theme": "general",
     "type": "QCM",
     "prompt": "Quelle civilisation a construit la cité de Machu Picchu ?",
+    "explanation": "Machu Picchu, situé à 2 430 m d'altitude dans les Andes péruviennes, fut construit au XVe siècle par l'empereur inca Pachacútec. Abandonné lors de la conquête espagnole, le site ne fut « redécouvert » par l'explorateur américain Hiram Bingham qu'en 1911.",
     "difficulty": 2,
     "options": [
       { "label": "Maya", "isCorrect": false },
       { "label": "Aztèque", "isCorrect": false },
       { "label": "Inca", "isCorrect": true },
       { "label": "Olmèque", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-particule-higgs",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "En quelle année le boson de Higgs a-t-il été observé expérimentalement pour la première fois ?",
+    "explanation": "Le boson de Higgs a été observé le 4 juillet 2012 au CERN grâce aux détecteurs ATLAS et CMS du Grand collisionneur de hadrons (LHC). Théorisé dès 1964 par Peter Higgs et d'autres physiciens, il explique comment les particules acquièrent leur masse.",
+    "difficulty": 3,
+    "options": [
+      { "label": "2008", "isCorrect": false },
+      { "label": "2012", "isCorrect": true },
+      { "label": "2015", "isCorrect": false },
+      { "label": "1998", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-code-hammurabi",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "À quelle civilisation appartient le Code de Hammurabi, l'un des plus anciens recueils de lois connus ?",
+    "explanation": "Le Code de Hammurabi date d'environ 1750 av. J.-C. et fut édicté par le roi Hammurabi de Babylone. Gravé sur une stèle de basalte aujourd'hui exposée au Louvre, il contient 282 articles couvrant le droit commercial, familial et pénal.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Égyptienne", "isCorrect": false },
+      { "label": "Babylonienne", "isCorrect": true },
+      { "label": "Perse", "isCorrect": false },
+      { "label": "Phénicienne", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-fleuve-plus-long",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel fleuve est généralement considéré comme le plus long du monde ?",
+    "explanation": "Le Nil mesure environ 6 695 km, de ses sources au lac Victoria jusqu'à la Méditerranée. L'Amazone, longtemps considéré comme second (6 400 km), pourrait le dépasser selon certaines mesures récentes qui incluent ses sources les plus lointaines au Pérou.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Amazone", "isCorrect": false },
+      { "label": "Nil", "isCorrect": true },
+      { "label": "Yangtsé", "isCorrect": false },
+      { "label": "Mississippi", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-tableau-periodique-oganesson",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel est le numéro atomique du dernier élément du tableau périodique, l'Oganesson ?",
+    "explanation": "L'Oganesson (Og), de numéro atomique 118, est l'élément le plus lourd officiellement reconnu. Synthétisé pour la première fois en 2002 au laboratoire de Doubna (Russie), il porte le nom du physicien nucléaire Yuri Oganessian.",
+    "difficulty": 3,
+    "options": [
+      { "label": "112", "isCorrect": false },
+      { "label": "115", "isCorrect": false },
+      { "label": "118", "isCorrect": true },
+      { "label": "120", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "art-guernica-ville",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Le tableau « Guernica » de Pablo Picasso dénonce le bombardement d'une ville de quel pays ?",
+    "explanation": "Guernica est une ville du Pays basque espagnol, bombardée le 26 avril 1937 par la légion Condor allemande durant la guerre civile espagnole. Picasso réalisa cette toile monumentale (3,49 × 7,76 m) en quelques semaines pour le pavillon espagnol de l'Exposition universelle de Paris.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/7/74/Guernica.jpg",
+    "difficulty": 3,
+    "options": [
+      { "label": "France", "isCorrect": false },
+      { "label": "Espagne", "isCorrect": true },
+      { "label": "Italie", "isCorrect": false },
+      { "label": "Portugal", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-rosette-dechiffrement",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Qui a déchiffré les hiéroglyphes égyptiens grâce à la pierre de Rosette ?",
+    "explanation": "Jean-François Champollion a annoncé le déchiffrement des hiéroglyphes le 27 septembre 1822 dans sa célèbre « Lettre à M. Dacier ». La pierre de Rosette, découverte en 1799 par des soldats de Bonaparte, portait le même texte en hiéroglyphes, en démotique et en grec ancien.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Howard Carter", "isCorrect": false },
+      { "label": "Jean-François Champollion", "isCorrect": true },
+      { "label": "Heinrich Schliemann", "isCorrect": false },
+      { "label": "Thomas Young", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-vitesse-lumiere",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la vitesse approximative de la lumière dans le vide ?",
+    "explanation": "La vitesse de la lumière dans le vide est exactement 299 792 458 m/s (environ 300 000 km/s). C'est une constante fondamentale de la physique, notée c, et constitue la vitesse maximale à laquelle toute information ou énergie peut se propager dans l'univers.",
+    "difficulty": 3,
+    "options": [
+      { "label": "150 000 km/s", "isCorrect": false },
+      { "label": "300 000 km/s", "isCorrect": true },
+      { "label": "500 000 km/s", "isCorrect": false },
+      { "label": "1 000 000 km/s", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-guerre-cent-ans-duree",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Combien d'années a réellement duré la guerre de Cent Ans ?",
+    "explanation": "La guerre de Cent Ans a duré 116 ans, de 1337 à 1453. Ce conflit entre les royaumes de France et d'Angleterre s'est conclu par la victoire française à la bataille de Castillon, mettant fin aux prétentions anglaises sur le trône de France.",
+    "difficulty": 3,
+    "options": [
+      { "label": "100 ans", "isCorrect": false },
+      { "label": "116 ans", "isCorrect": true },
+      { "label": "105 ans", "isCorrect": false },
+      { "label": "128 ans", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-pays-plus-petit",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel est le plus petit pays du monde en superficie ?",
+    "explanation": "Le Vatican (ou État de la Cité du Vatican) est le plus petit État du monde avec seulement 0,44 km². Enclavé dans la ville de Rome, il est le siège de l'Église catholique et est dirigé par le pape. Monaco (2,02 km²) est le deuxième plus petit.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Monaco", "isCorrect": false },
+      { "label": "Vatican", "isCorrect": true },
+      { "label": "Saint-Marin", "isCorrect": false },
+      { "label": "Liechtenstein", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-adn-structure",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Qui a proposé le modèle en double hélice de l'ADN en 1953 ?",
+    "explanation": "James Watson et Francis Crick ont publié la structure en double hélice de l'ADN dans la revue Nature le 25 avril 1953. Leur découverte s'appuyait sur les clichés de diffraction aux rayons X réalisés par Rosalind Franklin et Maurice Wilkins au King's College de Londres.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Gregor Mendel et Louis Pasteur", "isCorrect": false },
+      { "label": "Watson et Crick", "isCorrect": true },
+      { "label": "Darwin et Wallace", "isCorrect": false },
+      { "label": "Pauling et Corey", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "philo-logique-formelle",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel philosophe grec est considéré comme le fondateur de la logique formelle ?",
+    "explanation": "Aristote (384-322 av. J.-C.) a systématisé les règles du raisonnement dans son « Organon », posant les bases du syllogisme et de la logique déductive. Élève de Platon et précepteur d'Alexandre le Grand, il est aussi le fondateur du Lycée à Athènes.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Socrate", "isCorrect": false },
+      { "label": "Platon", "isCorrect": false },
+      { "label": "Aristote", "isCorrect": true },
+      { "label": "Épicure", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-desert-plus-grand",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel est le plus grand désert du monde ?",
+    "explanation": "L'Antarctique est le plus grand désert du monde avec 14 millions de km², devant le Sahara (9,1 millions de km²). Un désert se définit par ses faibles précipitations (moins de 250 mm/an), et l'Antarctique reçoit en moyenne seulement 50 mm de précipitations par an.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Sahara", "isCorrect": false },
+      { "label": "Antarctique", "isCorrect": true },
+      { "label": "Gobi", "isCorrect": false },
+      { "label": "Arabie", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-planete-plus-grande",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la plus grande planète du système solaire ?",
+    "explanation": "Jupiter est la plus grande planète du système solaire avec un diamètre d'environ 139 820 km, soit 11 fois celui de la Terre. Cette géante gazeuse possède plus de 90 satellites naturels connus, dont les quatre lunes galiléennes découvertes par Galilée en 1610.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Saturne", "isCorrect": false },
+      { "label": "Jupiter", "isCorrect": true },
+      { "label": "Neptune", "isCorrect": false },
+      { "label": "Uranus", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-revolution-francaise",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel événement marque le début symbolique de la Révolution française le 14 juillet 1789 ?",
+    "explanation": "La prise de la Bastille le 14 juillet 1789 est devenue le symbole de la Révolution française. Cette forteresse-prison, qui ne contenait alors que 7 prisonniers, représentait l'arbitraire royal. Cet événement a conduit à l'abolition de la monarchie absolue et à la Déclaration des droits de l'homme.",
+    "difficulty": 2,
+    "options": [
+      { "label": "La prise de la Bastille", "isCorrect": true },
+      { "label": "L'exécution de Louis XVI", "isCorrect": false },
+      { "label": "La fuite à Varennes", "isCorrect": false },
+      { "label": "Les États généraux", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "musique-neuvieme-symphonie",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel compositeur a écrit la Neuvième Symphonie, dont le final est l'« Ode à la joie » ?",
+    "explanation": "Ludwig van Beethoven a composé sa Neuvième Symphonie en 1824, alors qu'il était presque totalement sourd. L'« Ode à la joie » du dernier mouvement, sur un poème de Friedrich Schiller, est devenue l'hymne officiel de l'Union européenne en 1985.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Wolfgang Amadeus Mozart", "isCorrect": false },
+      { "label": "Ludwig van Beethoven", "isCorrect": true },
+      { "label": "Johann Sebastian Bach", "isCorrect": false },
+      { "label": "Franz Schubert", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "litterature-misérables-auteur",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Qui est l'auteur du roman « Les Misérables » ?",
+    "explanation": "Victor Hugo a publié « Les Misérables » en 1862, depuis son exil à Guernesey. Ce roman fleuve, qui suit le destin de Jean Valjean, est une fresque sociale de la France du XIXe siècle. Il est considéré comme l'un des plus grands romans de la littérature française.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Émile Zola", "isCorrect": false },
+      { "label": "Honoré de Balzac", "isCorrect": false },
+      { "label": "Victor Hugo", "isCorrect": true },
+      { "label": "Alexandre Dumas", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-os-corps-humain",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Combien d'os compte le squelette humain adulte ?",
+    "explanation": "Le squelette humain adulte compte 206 os. À la naissance, un bébé possède environ 270 os, dont beaucoup fusionnent au cours de la croissance. Le plus petit os du corps est l'étrier, situé dans l'oreille moyenne (environ 3 mm), et le plus grand est le fémur.",
+    "difficulty": 2,
+    "options": [
+      { "label": "186", "isCorrect": false },
+      { "label": "206", "isCorrect": true },
+      { "label": "226", "isCorrect": false },
+      { "label": "256", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-ocean-plus-profond",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Dans quel océan se trouve la fosse des Mariannes, le point le plus profond connu des océans ?",
+    "explanation": "La fosse des Mariannes, située dans l'océan Pacifique à l'est des îles Mariannes, atteint une profondeur de 10 994 mètres au point Challenger Deep. Le réalisateur James Cameron y a effectué une plongée en solitaire en 2012 à bord du sous-marin Deepsea Challenger.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Océan Atlantique", "isCorrect": false },
+      { "label": "Océan Indien", "isCorrect": false },
+      { "label": "Océan Pacifique", "isCorrect": true },
+      { "label": "Océan Arctique", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-mur-berlin",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "En quelle année le mur de Berlin est-il tombé ?",
+    "explanation": "Le mur de Berlin est tombé le 9 novembre 1989, après 28 ans de séparation entre Berlin-Est et Berlin-Ouest. Cet événement a marqué la fin de la Guerre froide et a conduit à la réunification allemande le 3 octobre 1990.",
+    "difficulty": 2,
+    "options": [
+      { "label": "1987", "isCorrect": false },
+      { "label": "1989", "isCorrect": true },
+      { "label": "1991", "isCorrect": false },
+      { "label": "1993", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-tableau-periodique-inventeur",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel chimiste est crédité de la création du tableau périodique des éléments ?",
+    "explanation": "Dmitri Mendeleïev a publié la première version de son tableau périodique en 1869, classant les 63 éléments connus par masse atomique croissante. Son génie fut de laisser des cases vides pour des éléments non encore découverts, dont il prédit les propriétés avec une précision remarquable.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Antoine Lavoisier", "isCorrect": false },
+      { "label": "Dmitri Mendeleïev", "isCorrect": true },
+      { "label": "Marie Curie", "isCorrect": false },
+      { "label": "John Dalton", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-capitale-australie",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la capitale de l'Australie ?",
+    "explanation": "Canberra est la capitale de l'Australie depuis 1913. La ville a été construite spécialement pour résoudre la rivalité entre Sydney et Melbourne, les deux plus grandes villes du pays, qui se disputaient le statut de capitale.",
+    "difficulty": 1,
+    "options": [
+      { "label": "Sydney", "isCorrect": false },
+      { "label": "Melbourne", "isCorrect": false },
+      { "label": "Canberra", "isCorrect": true },
+      { "label": "Brisbane", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-eau-formule",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la formule chimique de l'eau ?",
+    "explanation": "L'eau est composée de deux atomes d'hydrogène et d'un atome d'oxygène, d'où sa formule H₂O. C'est la molécule la plus abondante à la surface de la Terre et elle couvre environ 71 % de la surface terrestre.",
+    "difficulty": 1,
+    "options": [
+      { "label": "CO₂", "isCorrect": false },
+      { "label": "H₂O", "isCorrect": true },
+      { "label": "O₂", "isCorrect": false },
+      { "label": "NaCl", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-continents-nombre",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Combien de continents y a-t-il sur Terre ?",
+    "explanation": "Le modèle le plus courant distingue 7 continents : l'Afrique, l'Antarctique, l'Asie, l'Europe, l'Amérique du Nord, l'Amérique du Sud et l'Océanie. D'autres modèles en comptent 5 ou 6 en regroupant certains continents.",
+    "difficulty": 1,
+    "options": [
+      { "label": "5", "isCorrect": false },
+      { "label": "6", "isCorrect": false },
+      { "label": "7", "isCorrect": true },
+      { "label": "8", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "nature-animal-plus-rapide",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel est l'animal terrestre le plus rapide du monde ?",
+    "explanation": "Le guépard peut atteindre une vitesse de pointe d'environ 110-120 km/h sur de courtes distances. Il accélère de 0 à 100 km/h en environ 3 secondes, ce qui en fait aussi l'un des animaux les plus rapides à l'accélération.",
+    "difficulty": 1,
+    "options": [
+      { "label": "Lion", "isCorrect": false },
+      { "label": "Guépard", "isCorrect": true },
+      { "label": "Gazelle", "isCorrect": false },
+      { "label": "Lévrier", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-pays-etoile-drapeau-usa",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Combien d'étoiles figurent sur le drapeau des États-Unis ?",
+    "explanation": "Le drapeau américain comporte 50 étoiles, chacune représentant un État de l'Union. Le drapeau est passé de 13 étoiles en 1777 (pour les 13 colonies originales) à 50 en 1960, lors de l'admission d'Hawaï comme 50e État.",
+    "difficulty": 1,
+    "options": [
+      { "label": "48", "isCorrect": false },
+      { "label": "50", "isCorrect": true },
+      { "label": "51", "isCorrect": false },
+      { "label": "52", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-soleil-etoile-type",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Le Soleil est principalement composé de quel élément ?",
+    "explanation": "Le Soleil est composé d'environ 73 % d'hydrogène et 25 % d'hélium. La fusion nucléaire en son cœur transforme l'hydrogène en hélium, libérant une énergie colossale qui nous parvient sous forme de lumière et de chaleur.",
+    "difficulty": 1,
+    "options": [
+      { "label": "Oxygène", "isCorrect": false },
+      { "label": "Hélium", "isCorrect": false },
+      { "label": "Hydrogène", "isCorrect": true },
+      { "label": "Carbone", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-premiere-guerre-debut",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "En quelle année a débuté la Première Guerre mondiale ?",
+    "explanation": "La Première Guerre mondiale a débuté en 1914, déclenchée par l'assassinat de l'archiduc François-Ferdinand d'Autriche à Sarajevo le 28 juin. Le conflit a duré jusqu'en 1918 et a fait environ 20 millions de morts.",
+    "difficulty": 1,
+    "options": [
+      { "label": "1912", "isCorrect": false },
+      { "label": "1914", "isCorrect": true },
+      { "label": "1916", "isCorrect": false },
+      { "label": "1918", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-photosynthese",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel gaz les plantes absorbent-elles principalement lors de la photosynthèse ?",
+    "explanation": "Les plantes absorbent le dioxyde de carbone (CO₂) et utilisent la lumière du soleil pour le transformer en glucose et en oxygène. Ce processus est essentiel à la vie sur Terre car il produit l'oxygène que nous respirons.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Oxygène", "isCorrect": false },
+      { "label": "Azote", "isCorrect": false },
+      { "label": "Dioxyde de carbone", "isCorrect": true },
+      { "label": "Méthane", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-empire-ottoman-fin",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "En quelle année l'Empire ottoman a-t-il été officiellement dissous ?",
+    "explanation": "L'Empire ottoman a été officiellement dissous le 1er novembre 1922, quand la Grande Assemblée nationale de Turquie a aboli le sultanat. La République de Turquie a été proclamée le 29 octobre 1923 sous la direction de Mustafa Kemal Atatürk.",
+    "difficulty": 2,
+    "options": [
+      { "label": "1918", "isCorrect": false },
+      { "label": "1922", "isCorrect": true },
+      { "label": "1926", "isCorrect": false },
+      { "label": "1930", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "litterature-petit-prince-auteur",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Qui a écrit « Le Petit Prince » ?",
+    "explanation": "Antoine de Saint-Exupéry a publié « Le Petit Prince » en 1943 à New York. C'est l'ouvrage de littérature française le plus traduit et le plus lu au monde, avec plus de 200 millions d'exemplaires vendus dans plus de 500 langues et dialectes.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Albert Camus", "isCorrect": false },
+      { "label": "Antoine de Saint-Exupéry", "isCorrect": true },
+      { "label": "Marcel Proust", "isCorrect": false },
+      { "label": "Jules Verne", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-amazone-pays-source",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Dans quel pays se trouve la source de l'Amazone ?",
+    "explanation": "L'Amazone prend sa source au Pérou, dans les Andes, à environ 5 170 m d'altitude près du Nevado Mismi. Le fleuve parcourt ensuite environ 6 400 km à travers le Pérou, la Colombie et le Brésil avant de se jeter dans l'océan Atlantique.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Brésil", "isCorrect": false },
+      { "label": "Colombie", "isCorrect": false },
+      { "label": "Pérou", "isCorrect": true },
+      { "label": "Équateur", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-sang-groupes",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel groupe sanguin est considéré comme le « donneur universel » ?",
+    "explanation": "Le groupe O négatif est le donneur universel car ses globules rouges ne portent ni antigènes A, ni B, ni le facteur Rhésus. En cas d'urgence, quand le groupe sanguin du receveur est inconnu, on utilise du sang O négatif.",
+    "difficulty": 2,
+    "options": [
+      { "label": "A positif", "isCorrect": false },
+      { "label": "AB positif", "isCorrect": false },
+      { "label": "O négatif", "isCorrect": true },
+      { "label": "B négatif", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-independance-usa",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "En quelle année la Déclaration d'indépendance des États-Unis a-t-elle été adoptée ?",
+    "explanation": "La Déclaration d'indépendance a été adoptée le 4 juillet 1776 par le Congrès continental à Philadelphie. Rédigée principalement par Thomas Jefferson, elle proclamait la séparation des treize colonies britanniques d'Amérique avec la couronne britannique.",
+    "difficulty": 2,
+    "options": [
+      { "label": "1774", "isCorrect": false },
+      { "label": "1776", "isCorrect": true },
+      { "label": "1778", "isCorrect": false },
+      { "label": "1783", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "art-joconde-musee",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Dans quel musée est exposée la Joconde de Léonard de Vinci ?",
+    "explanation": "La Joconde (ou Mona Lisa) est exposée au musée du Louvre à Paris depuis 1797. Peinte par Léonard de Vinci entre 1503 et 1519, elle est protégée par une vitre blindée depuis une attaque à l'acide en 1956. C'est le tableau le plus visité au monde avec environ 10 millions de visiteurs par an.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/400px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
+    "difficulty": 2,
+    "options": [
+      { "label": "Musée d'Orsay", "isCorrect": false },
+      { "label": "Musée du Louvre", "isCorrect": true },
+      { "label": "Galerie des Offices", "isCorrect": false },
+      { "label": "British Museum", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-cleopatre-dynastie",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "À quelle dynastie appartenait Cléopâtre VII, dernière reine d'Égypte ?",
+    "explanation": "Cléopâtre VII appartenait à la dynastie des Ptolémées (ou Lagides), fondée par Ptolémée Ier, un général d'Alexandre le Grand. D'origine macédonienne-grecque, Cléopâtre fut la première de sa dynastie à apprendre la langue égyptienne. Elle régna de 51 à 30 av. J.-C.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Dynastie des Ramessides", "isCorrect": false },
+      { "label": "Dynastie des Ptolémées", "isCorrect": true },
+      { "label": "Dynastie des Thoutmôsides", "isCorrect": false },
+      { "label": "Dynastie des Saïtes", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-constante-avogadro",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la valeur approximative du nombre d'Avogadro ?",
+    "explanation": "Le nombre d'Avogadro est d'environ 6,022 × 10²³ mol⁻¹. Il représente le nombre d'entités (atomes, molécules…) contenues dans une mole de substance. Nommé en hommage au physicien italien Amedeo Avogadro, il est l'une des constantes fondamentales de la chimie.",
+    "difficulty": 3,
+    "options": [
+      { "label": "6,022 × 10²³", "isCorrect": true },
+      { "label": "3,14 × 10⁸", "isCorrect": false },
+      { "label": "1,602 × 10⁻¹⁹", "isCorrect": false },
+      { "label": "9,81 × 10¹⁰", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-guerre-peloponnese",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelles deux cités grecques principales se sont affrontées durant la guerre du Péloponnèse ?",
+    "explanation": "La guerre du Péloponnèse (431-404 av. J.-C.) opposa Athènes et sa ligue de Délos à Sparte et sa ligue du Péloponnèse. Le conflit, raconté par l'historien Thucydide, s'est terminé par la victoire de Sparte et le déclin de l'hégémonie athénienne.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Athènes et Thèbes", "isCorrect": false },
+      { "label": "Athènes et Sparte", "isCorrect": true },
+      { "label": "Sparte et Corinthe", "isCorrect": false },
+      { "label": "Athènes et Corinthe", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-relativite-restreinte",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle célèbre équation Albert Einstein a-t-il publiée dans sa théorie de la relativité restreinte ?",
+    "explanation": "L'équation E = mc², publiée par Einstein en 1905, établit l'équivalence entre masse et énergie. Elle signifie qu'une petite quantité de masse peut être convertie en une énorme quantité d'énergie, principe à la base de l'énergie nucléaire et des bombes atomiques.",
+    "difficulty": 3,
+    "options": [
+      { "label": "F = ma", "isCorrect": false },
+      { "label": "E = mc²", "isCorrect": true },
+      { "label": "PV = nRT", "isCorrect": false },
+      { "label": "F = G(m₁m₂/r²)", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-mariana-trench-profondeur",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la profondeur approximative du point le plus profond de la fosse des Mariannes (Challenger Deep) ?",
+    "explanation": "Le Challenger Deep atteint environ 10 994 mètres de profondeur. Si l'on plaçait le mont Everest (8 849 m) au fond, il resterait encore plus de 2 km d'eau au-dessus de son sommet. Seules quatre expéditions habitées y sont descendues.",
+    "difficulty": 3,
+    "options": [
+      { "label": "8 200 m", "isCorrect": false },
+      { "label": "10 994 m", "isCorrect": true },
+      { "label": "12 500 m", "isCorrect": false },
+      { "label": "15 000 m", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "art-david-sculpteur",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Qui a sculpté le célèbre « David » exposé à la Galerie de l'Académie à Florence ?",
+    "explanation": "Michel-Ange a sculpté le David entre 1501 et 1504, à partir d'un seul bloc de marbre de Carrare de 5,17 mètres de haut. L'œuvre représente le héros biblique David s'apprêtant à affronter Goliath. Elle est considérée comme un chef-d'œuvre de la Renaissance.",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/%27David%27_by_Michelangelo_Fir_JBU002.jpg/400px-%27David%27_by_Michelangelo_Fir_JBU002.jpg",
+    "difficulty": 3,
+    "options": [
+      { "label": "Donatello", "isCorrect": false },
+      { "label": "Michel-Ange", "isCorrect": true },
+      { "label": "Bernin", "isCorrect": false },
+      { "label": "Rodin", "isCorrect": false }
     ]
   }
 ]

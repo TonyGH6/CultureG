@@ -7,7 +7,7 @@ export const questionsRouter = Router();
 
 const querySchema = z.object({
     theme: z.string().optional(),
-    limit: z.coerce.number().min(1).max(20).default(5),
+    limit: z.coerce.number().min(1).max(20).default(10),
 });
 
 questionsRouter.get(

@@ -22,13 +22,15 @@ model User {
 }
 
 model Question {
-  id         String       @id @default(uuid())
-  slug       String       @unique
-  theme      String
-  type       QuestionType
-  prompt     String
-  difficulty Int          @default(2)
-  createdAt  DateTime     @default(now())
+  id          String       @id @default(uuid())
+  slug        String       @unique
+  theme       String
+  type        QuestionType
+  prompt      String
+  explanation String?
+  imageUrl    String?
+  difficulty  Int          @default(2)
+  createdAt   DateTime     @default(now())
 
   options        QuestionOption[]
   matchQuestions MatchQuestion[]

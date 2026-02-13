@@ -1,0 +1,62 @@
+services:
+  # ---- PostgreSQL ----
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cultureg}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-cultureg}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cultureg}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ---- Backend API ----
+  api:
+    build:
+      context: ./cultureg-api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-cultureg}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-cultureg}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      PORT: 3000
+      NODE_ENV: production
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  # ---- Frontend ----
+  front:
+    build:
+      context: ./cultureg-front
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE: ${VITE_API_BASE:-https://cultureg.example.com/api}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+
+  # ---- Nginx Reverse Proxy ----
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    depends_on:
+      - api
+      - front
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+
+volumes:
+  pgdata:

@@ -2,9 +2,10 @@ import { prisma } from "../shared/prisma";
 import { io } from "../ws";
 import { logger } from "../shared/logger";
 import { ok, err, type ServiceResult } from "../shared/result";
+import { eloDeltaDuel } from "./elo";
 
 /** Duels older than this (ms) are auto-expired */
-const DUEL_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+const DUEL_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
 /**
  * Expire all ONGOING duels that started more than DUEL_TIMEOUT_MS ago,
@@ -171,6 +172,7 @@ export async function getDuel(params: {
                             id: true,
                             slug: true,
                             prompt: true,
+                            imageUrl: true,
                             options: {
                                 select: { id: true, label: true, orderIndex: true },
                                 orderBy: { orderIndex: "asc" },
@@ -203,7 +205,16 @@ export async function submitDuelAnswers(params: {
     duelId: string;
     score: number;
     total: number;
-    details: { questionId: string; isCorrect: boolean }[];
+    details: {
+        questionId: string;
+        prompt: string;
+        explanation: string | null;
+        imageUrl: string | null;
+        isCorrect: boolean;
+        userAnswerId: string;
+        correctAnswerId: string;
+        options: { id: string; label: string; isCorrect: boolean }[];
+    }[];
 }>> {
     const { userId, duelId, answers } = params;
 
@@ -235,20 +246,40 @@ export async function submitDuelAnswers(params: {
         }
     }
 
-    // Server-side scoring
-    const optionIds = answers.map((a) => a.optionId);
-    const options = await prisma.questionOption.findMany({
-        where: { id: { in: optionIds } },
-        select: { id: true, isCorrect: true },
+    // Fetch full question data with options for detailed feedback
+    const questions = await prisma.question.findMany({
+        where: { id: { in: Array.from(allowedQuestionIds) } },
+        include: {
+            options: {
+                select: { id: true, label: true, isCorrect: true, orderIndex: true },
+                orderBy: { orderIndex: "asc" },
+            },
+        },
     });
 
-    const correctnessByOptionId = new Map(options.map((o) => [o.id, o.isCorrect]));
+    const questionMap = new Map(questions.map((q) => [q.id, q]));
     let score = 0;
 
     const details = answers.map((a) => {
-        const isCorrect = correctnessByOptionId.get(a.optionId) === true;
+        const question = questionMap.get(a.questionId);
+        const correctOption = question?.options.find((opt) => opt.isCorrect);
+        const isCorrect = question?.options.find((opt) => opt.id === a.optionId)?.isCorrect === true;
         if (isCorrect) score += 1;
-        return { questionId: a.questionId, isCorrect };
+
+        return {
+            questionId: a.questionId,
+            prompt: question?.prompt ?? "Question not found",
+            explanation: question?.explanation ?? null,
+            imageUrl: question?.imageUrl ?? null,
+            isCorrect,
+            userAnswerId: a.optionId,
+            correctAnswerId: correctOption?.id ?? "",
+            options: question?.options.map((opt) => ({
+                id: opt.id,
+                label: opt.label,
+                isCorrect: opt.isCorrect,
+            })) ?? [],
+        };
     });
 
     await prisma.$transaction([
@@ -284,14 +315,45 @@ export async function submitDuelAnswers(params: {
         const isDraw = winnersCount > 1;
         const winnerId = isDraw ? null : sortedByScore[0].userId;
 
-        await prisma.duel.update({
-            where: { id: duelId },
-            data: { status: "FINISHED", finishedAt: new Date() },
+        // Compute Elo deltas
+        const users = await prisma.user.findMany({
+            where: { id: { in: playersWithScores.map((p) => p.userId) } },
+            select: { id: true, elo: true },
         });
+        const eloMap = new Map(users.map((u) => [u.id, u.elo]));
+
+        const [p1, p2] = playersWithScores;
+        const p1Elo = eloMap.get(p1.userId) ?? 1000;
+        const p2Elo = eloMap.get(p2.userId) ?? 1000;
+
+        const p1Result = isDraw ? "draw" as const : p1.userId === winnerId ? "win" as const : "loss" as const;
+        const p2Result = isDraw ? "draw" as const : p2.userId === winnerId ? "win" as const : "loss" as const;
+
+        const p1Delta = eloDeltaDuel(p1Elo, p2Elo, p1Result);
+        const p2Delta = eloDeltaDuel(p2Elo, p1Elo, p2Result);
+
+        await prisma.$transaction([
+            prisma.duel.update({
+                where: { id: duelId },
+                data: { status: "FINISHED", finishedAt: new Date() },
+            }),
+            prisma.user.update({
+                where: { id: p1.userId },
+                data: { elo: Math.max(0, p1Elo + p1Delta) },
+            }),
+            prisma.user.update({
+                where: { id: p2.userId },
+                data: { elo: Math.max(0, p2Elo + p2Delta) },
+            }),
+        ]);
 
         io?.to(`duel:${duelId}`).emit("duel:finished", {
             duelId,
-            players: playersWithScores,
+            players: playersWithScores.map((p) => ({
+                userId: p.userId,
+                score: p.score,
+                eloDelta: p.userId === p1.userId ? p1Delta : p2Delta,
+            })),
             winnerId,
             isDraw,
         });

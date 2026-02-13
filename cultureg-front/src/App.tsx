@@ -42,9 +42,23 @@ export default function App() {
     const [theme] = useState("general");
     const [screen, setScreen] = useState<Screen>("login");
     const [error, setError] = useState("");
-    const [scoreResult, setScoreResult] = useState<{ score: number; total: number } | null>(null);
-    const [duelResult, setDuelResult] = useState<{ winnerId: string | null; isDraw: boolean; players: { userId: string; score: number | null }[] } | null>(null);
+    const [scoreResult, setScoreResult] = useState<{
+        score: number;
+        total: number;
+        details?: {
+            questionId: string;
+            prompt: string;
+            explanation: string | null;
+            imageUrl: string | null;
+            isCorrect: boolean;
+            userAnswerId: string;
+            correctAnswerId: string;
+            options: { id: string; label: string; isCorrect: boolean }[];
+        }[];
+    } | null>(null);
+    const [duelResult, setDuelResult] = useState<{ winnerId: string | null; isDraw: boolean; players: { userId: string; score: number | null; eloDelta?: number }[] } | null>(null);
     const duelFinishedRef = useRef(false);
+    const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
     const [log, setLog] = useState<string[]>([]);
     const [showLogs, setShowLogs] = useState(false);
 
@@ -132,6 +146,11 @@ export default function App() {
                     isDraw: msg.isDraw ?? false,
                     players: msg.players ?? [],
                 });
+                // Update local Elo with delta from server
+                const myPlayer = (msg.players ?? []).find((p: any) => p.userId === auth.userId);
+                if (myPlayer?.eloDelta != null) {
+                    auth.setElo((prev: number) => Math.max(0, prev + myPlayer.eloDelta));
+                }
                 void duel.refreshDuel(String(msg.duelId));
                 // Navigate to results when duel is finished (handles waiting-results → results)
                 setScreen("results");
@@ -184,7 +203,7 @@ export default function App() {
     async function startSoloMatch() {
         setError("");
         try {
-            await solo.startMatch(theme, 5);
+            await solo.startMatch(theme, 10);
             setScreen("solo");
         } catch (e: any) {
             setError(e?.message ?? "Failed to start solo match");
@@ -214,7 +233,7 @@ export default function App() {
                 token: auth.token,
                 body: JSON.stringify({ answers: answersList }),
             });
-            setScoreResult({ score: resp.score, total: resp.total });
+            setScoreResult({ score: resp.score, total: resp.total, details: resp.details ?? [] });
             // If duel:finished WS already arrived (both players done), go straight to results.
             // Otherwise wait for the opponent on the waiting screen.
             setScreen(duelFinishedRef.current ? "results" : "waiting-results");
@@ -228,6 +247,7 @@ export default function App() {
         setScoreResult(null);
         setDuelResult(null);
         duelFinishedRef.current = false;
+        setExpandedQuestions(new Set());
         setError("");
         setScreen("lobby");
     }
@@ -381,7 +401,7 @@ export default function App() {
                             </div>
                             <h2 className="text-3xl font-bold text-white mb-2">Prêt pour un duel ?</h2>
                             <p className="text-gray-400 mb-8">
-                                Affronte un adversaire sur <span className="text-purple-400 font-semibold">5 questions</span> de culture générale
+                                Affronte un adversaire sur <span className="text-purple-400 font-semibold">10 questions</span> de culture générale
                             </p>
 
                             {error && (
@@ -468,40 +488,31 @@ export default function App() {
                                 </h2>
                             </div>
 
+                            {currentQ.imageUrl && (
+                                <div className="mb-6 flex justify-center">
+                                    <img
+                                        src={currentQ.imageUrl}
+                                        alt="Illustration de la question"
+                                        className="max-h-64 rounded-xl border border-gray-700 object-contain"
+                                    />
+                                </div>
+                            )}
+
                             {/* options */}
                             <div className="space-y-3">
-                                {currentQ.options.map((option, idx) => {
+                                {currentQ.options.map((option) => {
                                     const isSelected = duel.answers[currentQ.id] === option.id;
-                                    const letters = ["A", "B", "C", "D", "E", "F"];
                                     return (
                                         <button
                                             key={option.id}
                                             onClick={() => duel.selectAnswer(currentQ.id, option.id)}
-                                            className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-4 group ${
+                                            className={`w-full text-left px-6 py-4 rounded-xl border-2 transition-all duration-200 ${
                                                 isSelected
-                                                    ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/10"
-                                                    : "border-gray-700/50 bg-gray-800/40 hover:border-gray-600 hover:bg-gray-800/80"
+                                                    ? "bg-purple-500/20 border-purple-500 text-white shadow-lg shadow-purple-500/20"
+                                                    : "bg-gray-800/50 border-gray-700 text-gray-300 hover:border-purple-500/50 hover:bg-gray-800"
                                             }`}
                                         >
-                                            <span
-                                                className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 transition-all ${
-                                                    isSelected
-                                                        ? "bg-purple-500 text-white"
-                                                        : "bg-gray-700/50 text-gray-400 group-hover:bg-gray-700 group-hover:text-gray-300"
-                                                }`}
-                                            >
-                                                {letters[idx]}
-                                            </span>
-                                            <span className={`text-lg ${isSelected ? "text-white font-medium" : "text-gray-300"}`}>
-                                                {option.label}
-                                            </span>
-                                            {isSelected && (
-                                                <span className="ml-auto text-purple-400">
-                                                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                    </svg>
-                                                </span>
-                                            )}
+                                            <span className="font-medium">{option.label}</span>
                                         </button>
                                     );
                                 })}
@@ -584,7 +595,7 @@ export default function App() {
 
                 {/* ─── RESULTS ─── */}
                 {screen === "results" && scoreResult && (
-                    <div className="w-full max-w-md">
+                    <div className="w-full max-w-lg">
                         <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl text-center">
                             {/* Winner/Loser/Draw display */}
                             {duelResult && (
@@ -644,9 +655,16 @@ export default function App() {
                                                         {isCurrentUser ? "Toi" : "Adversaire"}
                                                     </span>
                                                 </div>
-                                                <span className="text-2xl font-bold text-white">
-                                                    {player.score ?? 0} / {scoreResult.total}
-                                                </span>
+                                                <div className="flex items-center gap-3">
+                                                    {player.eloDelta != null && (
+                                                        <span className={`text-sm font-bold ${player.eloDelta >= 0 ? "text-green-400" : "text-red-400"}`}>
+                                                            {player.eloDelta >= 0 ? "+" : ""}{player.eloDelta} Elo
+                                                        </span>
+                                                    )}
+                                                    <span className="text-2xl font-bold text-white">
+                                                        {player.score ?? 0} / {scoreResult.total}
+                                                    </span>
+                                                </div>
                                             </div>
                                         );
                                     })}
@@ -678,6 +696,87 @@ export default function App() {
                                 <IconTrophy />
                                 <span className="font-semibold">Elo : {auth.elo}</span>
                             </div>
+
+                            {/* Detailed correction */}
+                            {scoreResult.details && scoreResult.details.length > 0 && (
+                                <div className="mb-6 space-y-2 text-left">
+                                    <h3 className="text-sm font-semibold text-gray-400 mb-3">Correction détaillée</h3>
+                                    {scoreResult.details.map((detail, idx) => {
+                                        const isOpen = expandedQuestions.has(`duel-${idx}`);
+                                        return (
+                                            <div
+                                                key={detail.questionId}
+                                                className={`border rounded-xl overflow-hidden ${
+                                                    detail.isCorrect
+                                                        ? "bg-green-500/5 border-green-500/30"
+                                                        : "bg-red-500/5 border-red-500/30"
+                                                }`}
+                                            >
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setExpandedQuestions((prev) => {
+                                                        const next = new Set(prev);
+                                                        if (next.has(`duel-${idx}`)) next.delete(`duel-${idx}`);
+                                                        else next.add(`duel-${idx}`);
+                                                        return next;
+                                                    })}
+                                                    className="w-full flex items-center gap-3 p-4 text-left cursor-pointer hover:bg-white/5 transition-colors"
+                                                >
+                                                    <span className={`text-xl ${detail.isCorrect ? "text-green-400" : "text-red-400"}`}>
+                                                        {detail.isCorrect ? "✓" : "✗"}
+                                                    </span>
+                                                    <span className="flex-1 text-sm text-white font-medium">Question {idx + 1}</span>
+                                                    <span className={`text-gray-400 text-xs transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
+                                                        ▼
+                                                    </span>
+                                                </button>
+
+                                                {isOpen && (
+                                                    <div className="px-4 pb-4">
+                                                        <p className="text-sm text-gray-300 mb-3 leading-relaxed">{detail.prompt}</p>
+                                                        {detail.imageUrl && (
+                                                            <div className="mb-3 flex justify-center">
+                                                                <img
+                                                                    src={detail.imageUrl}
+                                                                    alt="Illustration"
+                                                                    className="max-h-48 rounded-lg border border-gray-700 object-contain"
+                                                                />
+                                                            </div>
+                                                        )}
+                                                        <div className="space-y-2">
+                                                            {detail.options.map((opt) => {
+                                                                const isUserAnswer = opt.id === detail.userAnswerId;
+                                                                const isCorrectAnswer = opt.id === detail.correctAnswerId;
+                                                                return (
+                                                                    <div
+                                                                        key={opt.id}
+                                                                        className={`text-sm px-3 py-2 rounded-lg ${
+                                                                            isCorrectAnswer
+                                                                                ? "bg-green-500/20 text-green-300 font-semibold"
+                                                                                : isUserAnswer
+                                                                                  ? "bg-red-500/20 text-red-300"
+                                                                                  : "bg-gray-800/50 text-gray-400"
+                                                                        }`}
+                                                                    >
+                                                                        {opt.label}
+                                                                        {isCorrectAnswer && <span className="ml-2">✓ Bonne réponse</span>}
+                                                                        {isUserAnswer && !isCorrectAnswer && <span className="ml-2">✗ Ta réponse</span>}
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                        {detail.explanation && (
+                                                            <p className="mt-3 text-xs text-gray-400 italic leading-relaxed border-t border-gray-700/50 pt-3">
+                                                                💡 {detail.explanation}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
 
                             <button
                                 onClick={playAgain}
@@ -715,6 +814,16 @@ export default function App() {
                             <h3 className="text-xl font-semibold text-white mb-6 leading-relaxed">
                                 {solo.questions[solo.currentQuestionIndex].prompt}
                             </h3>
+
+                            {solo.questions[solo.currentQuestionIndex].imageUrl && (
+                                <div className="mb-6 flex justify-center">
+                                    <img
+                                        src={solo.questions[solo.currentQuestionIndex].imageUrl!}
+                                        alt="Illustration de la question"
+                                        className="max-h-64 rounded-xl border border-gray-700 object-contain"
+                                    />
+                                </div>
+                            )}
 
                             <div className="space-y-3">
                                 {solo.questions[solo.currentQuestionIndex].options.map((opt) => {
@@ -790,75 +899,94 @@ export default function App() {
                                         </span>
                                         <span className="text-2xl text-gray-500">/ {solo.result.total}</span>
                                     </div>
+                                    <p className="mt-2 text-sm text-gray-500">Mode entraînement — pas d'impact sur l'Elo</p>
                                 </div>
 
-                                <div className="flex items-center justify-center gap-6 text-sm">
-                                    <div className="flex items-center gap-2 text-gray-400">
-                                        <span>Elo avant :</span>
-                                        <span className="font-semibold text-white">{solo.result.eloBefore}</span>
-                                    </div>
-                                    <div className={`flex items-center gap-1 font-bold ${solo.result.eloDelta >= 0 ? "text-green-400" : "text-red-400"}`}>
-                                        {solo.result.eloDelta >= 0 ? "+" : ""}{solo.result.eloDelta}
-                                    </div>
-                                    <div className="flex items-center gap-2 text-gray-400">
-                                        <span>Elo après :</span>
-                                        <span className="font-semibold text-yellow-400">{solo.result.eloAfter}</span>
-                                    </div>
-                                </div>
                             </div>
 
                             {/* detailed answers */}
-                            <div className="mb-6 space-y-4">
+                            <div className="mb-6 space-y-2">
                                 <h3 className="text-sm font-semibold text-gray-400 mb-3">Correction détaillée</h3>
-                                {solo.result.details.map((detail, idx) => (
-                                    <div
-                                        key={detail.questionId}
-                                        className={`border rounded-xl p-4 ${
-                                            detail.isCorrect
-                                                ? "bg-green-500/5 border-green-500/30"
-                                                : "bg-red-500/5 border-red-500/30"
-                                        }`}
-                                    >
-                                        <div className="flex items-start gap-3 mb-3">
-                                            <span className={`text-2xl ${detail.isCorrect ? "text-green-400" : "text-red-400"}`}>
-                                                {detail.isCorrect ? "✓" : "✗"}
-                                            </span>
-                                            <div className="flex-1">
-                                                <div className="text-xs text-gray-500 mb-1">Question {idx + 1}</div>
-                                                <p className="text-sm text-white font-medium leading-relaxed">{detail.prompt}</p>
-                                            </div>
-                                        </div>
+                                {solo.result.details.map((detail, idx) => {
+                                    const isOpen = expandedQuestions.has(`solo-${idx}`);
+                                    return (
+                                        <div
+                                            key={detail.questionId}
+                                            className={`border rounded-xl overflow-hidden ${
+                                                detail.isCorrect
+                                                    ? "bg-green-500/5 border-green-500/30"
+                                                    : "bg-red-500/5 border-red-500/30"
+                                            }`}
+                                        >
+                                            <button
+                                                type="button"
+                                                onClick={() => setExpandedQuestions((prev) => {
+                                                    const next = new Set(prev);
+                                                    if (next.has(`solo-${idx}`)) next.delete(`solo-${idx}`);
+                                                    else next.add(`solo-${idx}`);
+                                                    return next;
+                                                })}
+                                                className="w-full flex items-center gap-3 p-4 text-left cursor-pointer hover:bg-white/5 transition-colors"
+                                            >
+                                                <span className={`text-xl ${detail.isCorrect ? "text-green-400" : "text-red-400"}`}>
+                                                    {detail.isCorrect ? "✓" : "✗"}
+                                                </span>
+                                                <span className="flex-1 text-sm text-white font-medium">Question {idx + 1}</span>
+                                                <span className={`text-gray-400 text-xs transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
+                                                    ▼
+                                                </span>
+                                            </button>
 
-                                        <div className="space-y-2 ml-8">
-                                            {detail.options.map((opt) => {
-                                                const isUserAnswer = opt.id === detail.userAnswerId;
-                                                const isCorrectAnswer = opt.id === detail.correctAnswerId;
-
-                                                return (
-                                                    <div
-                                                        key={opt.id}
-                                                        className={`text-sm px-3 py-2 rounded-lg ${
-                                                            isCorrectAnswer
-                                                                ? "bg-green-500/20 text-green-300 font-semibold"
-                                                                : isUserAnswer
-                                                                  ? "bg-red-500/20 text-red-300"
-                                                                  : "bg-gray-800/50 text-gray-400"
-                                                        }`}
-                                                    >
-                                                        {opt.label}
-                                                        {isCorrectAnswer && <span className="ml-2">✓ Bonne réponse</span>}
-                                                        {isUserAnswer && !isCorrectAnswer && <span className="ml-2">✗ Votre réponse</span>}
+                                            {isOpen && (
+                                                <div className="px-4 pb-4">
+                                                    <p className="text-sm text-gray-300 mb-3 leading-relaxed">{detail.prompt}</p>
+                                                    {detail.imageUrl && (
+                                                        <div className="mb-3 flex justify-center">
+                                                            <img
+                                                                src={detail.imageUrl}
+                                                                alt="Illustration"
+                                                                className="max-h-48 rounded-lg border border-gray-700 object-contain"
+                                                            />
+                                                        </div>
+                                                    )}
+                                                    <div className="space-y-2">
+                                                        {detail.options.map((opt) => {
+                                                            const isUserAnswer = opt.id === detail.userAnswerId;
+                                                            const isCorrectAnswer = opt.id === detail.correctAnswerId;
+                                                            return (
+                                                                <div
+                                                                    key={opt.id}
+                                                                    className={`text-sm px-3 py-2 rounded-lg ${
+                                                                        isCorrectAnswer
+                                                                            ? "bg-green-500/20 text-green-300 font-semibold"
+                                                                            : isUserAnswer
+                                                                              ? "bg-red-500/20 text-red-300"
+                                                                              : "bg-gray-800/50 text-gray-400"
+                                                                    }`}
+                                                                >
+                                                                    {opt.label}
+                                                                    {isCorrectAnswer && <span className="ml-2">✓ Bonne réponse</span>}
+                                                                    {isUserAnswer && !isCorrectAnswer && <span className="ml-2">✗ Ta réponse</span>}
+                                                                </div>
+                                                            );
+                                                        })}
                                                     </div>
-                                                );
-                                            })}
+                                                    {detail.explanation && (
+                                                        <p className="mt-3 text-xs text-gray-400 italic leading-relaxed border-t border-gray-700/50 pt-3">
+                                                            💡 {detail.explanation}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
 
                             <button
                                 onClick={() => {
                                     solo.resetMatch();
+                                    setExpandedQuestions(new Set());
                                     setScreen("lobby");
                                 }}
                                 className="w-full py-4 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 active:scale-[0.98]"

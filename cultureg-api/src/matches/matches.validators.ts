@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const startMatchSchema = z.object({
     theme: z.string().min(1),
-    limit: z.coerce.number().int().min(1).max(10).default(5),
+    limit: z.coerce.number().int().min(1).max(20).default(10),
 });
 
 export const submitMatchSchema = z.object({
@@ -15,7 +15,7 @@ export const submitMatchSchema = z.object({
             })
         )
         .min(1)
-        .max(10),
+        .max(20),
 });
 
 export const historyQuerySchema = z.object({
