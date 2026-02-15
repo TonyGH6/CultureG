@@ -6,7 +6,6 @@ import { matchesRouter } from "./matches/matches.routes";
 import { queueRouter } from "./queue/queue.routes";
 import { duelsRouter } from "./duels/duels.routes";
 import { errorHandler } from "./middleware/errorHandler";
-import { env } from "./env";
 
 export const app = express();
 

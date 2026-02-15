@@ -1,5 +1,8 @@
-import { prisma } from "../shared/prisma";
 import { ok, err, type ServiceResult } from "../shared/result";
+import * as matchesRepo from "./matches.repository";
+import * as questionsRepo from "../questions/questions.repository";
+import * as authRepo from "../auth/auth.repository";
+import { toMatchStartDto, toMatchDetailDto, type MatchStartDto, type MatchSubmitDto } from "./matches.mapper";
 
 type StartMatchInput = {
     userId: string;
@@ -13,101 +16,47 @@ type SubmitMatchInput = {
     answers: { questionId: string; optionId: string; timeMs?: number }[];
 };
 
-export async function startMatch({ userId, theme, limit }: StartMatchInput): Promise<ServiceResult<{
-    matchId: string;
-    theme: string;
-    questions: { id: string; slug: string; prompt: string; options: { id: string; label: string; orderIndex: number }[] }[];
-}>> {
-    const allQuestions = await prisma.question.findMany({
-        where: { theme },
-        include: {
-            options: {
-                select: { id: true, label: true, orderIndex: true },
-                orderBy: { orderIndex: "asc" },
-            },
-        },
-    });
+export async function startMatch(input: StartMatchInput): Promise<ServiceResult<MatchStartDto>> {
+    const allQuestions = await questionsRepo.findManyByTheme(input.theme);
 
-    if (allQuestions.length < limit) {
+    if (allQuestions.length < input.limit) {
         return err(400, "Not enough questions for this theme");
     }
 
     const shuffled = allQuestions.sort(() => Math.random() - 0.5);
-    const questions = shuffled.slice(0, limit);
+    const questions = shuffled.slice(0, input.limit);
 
-    const match = await prisma.match.create({
-        data: {
-            userId,
-            theme,
-            questions: {
-                create: questions.map((q, idx) => ({
-                    questionId: q.id,
-                    orderIndex: idx,
-                })),
-            },
-        },
-        select: { id: true, theme: true },
-    });
-
-    return ok({
-        matchId: match.id,
-        theme: match.theme,
-        questions: questions.map((q) => ({
-            id: q.id,
-            slug: q.slug,
-            prompt: q.prompt,
-            imageUrl: q.imageUrl,
-            options: q.options,
+    const match = await matchesRepo.createMatch({
+        userId: input.userId,
+        theme: input.theme,
+        questions: questions.map((q, idx) => ({
+            questionId: q.id,
+            orderIndex: idx,
         })),
     });
+
+    return ok(toMatchStartDto(match, questions));
 }
 
-export async function submitMatch({ userId, matchId, answers }: SubmitMatchInput): Promise<ServiceResult<{
-    matchId: string;
-    score: number;
-    total: number;
-    details: {
-        questionId: string;
-        prompt: string;
-        explanation: string | null;
-        imageUrl: string | null;
-        isCorrect: boolean;
-        userAnswerId: string;
-        correctAnswerId: string;
-        options: { id: string; label: string; isCorrect: boolean }[];
-    }[];
-}>> {
-    const match = await prisma.match.findFirst({
-        where: { id: matchId, userId },
-        include: { questions: true },
-    });
+export async function submitMatch(input: SubmitMatchInput): Promise<ServiceResult<MatchSubmitDto>> {
+    const match = await matchesRepo.findByIdAndUser(input.matchId, input.userId);
 
     if (!match) return err(404, "Match not found");
     if (match.status === "FINISHED") return err(400, "Match already finished");
 
     const allowedQuestionIds = new Set(match.questions.map((mq) => mq.questionId));
 
-    for (const a of answers) {
+    for (const a of input.answers) {
         if (!allowedQuestionIds.has(a.questionId)) {
             return err(400, "Answer contains a question not in this match");
         }
     }
 
-    // Fetch full question data with options
-    const questions = await prisma.question.findMany({
-        where: { id: { in: Array.from(allowedQuestionIds) } },
-        include: {
-            options: {
-                select: { id: true, label: true, isCorrect: true, orderIndex: true },
-                orderBy: { orderIndex: "asc" },
-            },
-        },
-    });
-
+    const questions = await questionsRepo.findManyByIds(Array.from(allowedQuestionIds));
     const questionMap = new Map(questions.map((q) => [q.id, q]));
     let score = 0;
 
-    const details = answers.map((a) => {
+    const details = input.answers.map((a) => {
         const question = questionMap.get(a.questionId);
         if (!question) {
             return {
@@ -122,76 +71,32 @@ export async function submitMatch({ userId, matchId, answers }: SubmitMatchInput
             };
         }
 
-        const correctOption = question.options.find((opt) => opt.isCorrect);
-        const userOption = question.options.find((opt) => opt.id === a.optionId);
-        const isCorrect = userOption?.isCorrect === true;
-
-        if (isCorrect) score += 1;
-
-        return {
-            questionId: a.questionId,
-            prompt: question.prompt,
-            explanation: question.explanation ?? null,
-            imageUrl: question.imageUrl ?? null,
-            isCorrect,
-            userAnswerId: a.optionId,
-            correctAnswerId: correctOption?.id ?? "",
-            options: question.options.map((opt) => ({
-                id: opt.id,
-                label: opt.label,
-                isCorrect: opt.isCorrect,
-            })),
-        };
+        const detail = toMatchDetailDto(question, a);
+        if (detail.isCorrect) score += 1;
+        return detail;
     });
 
     const total = match.questions.length;
 
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { elo: true },
-    });
-
+    const user = await authRepo.findById(input.userId);
     const currentElo = user?.elo ?? 1000;
 
-    await prisma.$transaction([
-        prisma.matchAnswer.createMany({
-            data: answers.map((a) => ({
-                matchId,
-                questionId: a.questionId,
-                optionId: a.optionId,
-                timeMs: a.timeMs ?? null,
-            })),
-            skipDuplicates: true,
-        }),
-        prisma.match.update({
-            where: { id: matchId },
-            data: {
-                status: "FINISHED",
-                score,
-                eloBefore: currentElo,
-                eloAfter: currentElo,
-                finishedAt: new Date(),
-            },
-        }),
-    ]);
+    await matchesRepo.createAnswersAndFinish({
+        matchId: input.matchId,
+        answers: input.answers.map((a) => ({
+            matchId: input.matchId,
+            questionId: a.questionId,
+            optionId: a.optionId,
+            timeMs: a.timeMs ?? null,
+        })),
+        score,
+        eloBefore: currentElo,
+        eloAfter: currentElo,
+    });
 
-    return ok({ matchId, score, total, details });
+    return ok({ matchId: input.matchId, score, total, details });
 }
 
 export async function getMatchHistory(userId: string, limit: number) {
-    return prisma.match.findMany({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-        take: limit,
-        select: {
-            id: true,
-            theme: true,
-            status: true,
-            score: true,
-            createdAt: true,
-            finishedAt: true,
-            eloBefore: true,
-            eloAfter: true,
-        },
-    });
+    return matchesRepo.findHistoryByUser(userId, limit);
 }
