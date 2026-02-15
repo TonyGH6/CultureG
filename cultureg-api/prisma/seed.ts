@@ -1,13 +1,8 @@
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
-import { QuestionType } from "@prisma/client";
+import { PrismaClient, QuestionType } from "@prisma/client";
 import questions from "./questions.json";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 async function main() {
     console.log(`🌱 Seeding ${questions.length} questions...`);
