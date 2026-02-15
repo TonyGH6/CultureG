@@ -2,7 +2,9 @@ import "dotenv/config";
 import { PrismaClient, QuestionType } from "@prisma/client";
 import questions from "./questions.json";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+    accelerateUrl: process.env.PRISMA_URL,
+});
 
 async function main() {
     console.log(`🌱 Seeding ${questions.length} questions...`);
