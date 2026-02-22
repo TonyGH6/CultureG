@@ -641,7 +641,13 @@ export default function App() {
                                     return (
                                         <button
                                             key={option.id}
-                                            onClick={() => duel.selectAnswer(currentQ.id, option.id)}
+                                            onClick={() => {
+                                                duel.selectAnswer(currentQ.id, option.id);
+                                                // FRENZY: auto-advance to next question on answer
+                                                if (duelMode === "FRENZY" && duel.currentQuestionIndex < totalQ - 1) {
+                                                    duel.setCurrentQuestionIndex(duel.currentQuestionIndex + 1);
+                                                }
+                                            }}
                                             className={`w-full text-left px-6 py-4 rounded-xl border-2 transition-all duration-200 ${
                                                 isSelected
                                                     ? "bg-amber-500/15 border-amber-500 text-stone-800 shadow-lg shadow-amber-500/20"
