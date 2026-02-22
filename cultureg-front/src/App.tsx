@@ -35,6 +35,7 @@ export default function App() {
     const [duelMode, setDuelMode] = useState<"CLASSIC" | "FRENZY">("CLASSIC");
     const [frenzyTimeLeft, setFrenzyTimeLeft] = useState<number | null>(null);
     const frenzyTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const handleSubmitRef = useRef<() => void>(() => {});
     const [screen, setScreen] = useState<Screen>("login");
     const [error, setError] = useState("");
     const [scoreResult, setScoreResult] = useState<{
@@ -181,8 +182,6 @@ export default function App() {
                                 if (t === null || t <= 1) {
                                     clearInterval(frenzyTimerRef.current!);
                                     frenzyTimerRef.current = null;
-                                    // Auto-submit when time runs out
-                                    void handleSubmit();
                                     return 0;
                                 }
                                 return t - 1;
@@ -299,6 +298,15 @@ export default function App() {
             setError(e?.message ?? "Submit error");
         }
     }
+    // Keep ref always pointing to latest handleSubmit (avoids stale closures in timer)
+    handleSubmitRef.current = handleSubmit;
+
+    // Auto-submit when FRENZY timer hits 0
+    useEffect(() => {
+        if (frenzyTimeLeft === 0 && duelMode === "FRENZY" && screen === "duel") {
+            void handleSubmitRef.current();
+        }
+    }, [frenzyTimeLeft]);
 
     function playAgain() {
         duel.resetDuel();
