@@ -300,11 +300,9 @@ export default function App() {
             {/* HEADER */}
             <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800/60">
                 <div className="flex items-center gap-3">
-                    <div className="text-purple-400">
-                        <IconBrain />
-                    </div>
+                    <img src="/logo.png" alt="Owlympiad" className="w-10 h-10 rounded-full" />
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                        CultureG
+                        Owlympiad
                     </h1>
                 </div>
 
@@ -335,11 +333,11 @@ export default function App() {
                     <div className="w-full max-w-md">
                         <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl shadow-purple-500/5">
                             <div className="text-center mb-8">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-500/10 text-purple-400 mb-4">
-                                    <IconBrain />
+                                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-500/10 mb-4">
+                                    <img src="/logo.png" alt="Owlympiad" className="w-16 h-16 rounded-full" />
                                 </div>
                                 <h2 className="text-2xl font-bold text-white">
-                                    {isRegistering ? "Créer un compte" : "Bienvenue sur CultureG"}
+                                    {isRegistering ? "Créer un compte" : "Bienvenue sur Owlympiad"}
                                 </h2>
                                 <p className="text-gray-400 mt-2">
                                     {isRegistering
