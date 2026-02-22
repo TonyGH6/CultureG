@@ -32,6 +32,9 @@ export default function App() {
     const [username, setUsername] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
     const [theme] = useState("general");
+    const [duelMode, setDuelMode] = useState<"CLASSIC" | "FRENZY">("CLASSIC");
+    const [frenzyTimeLeft, setFrenzyTimeLeft] = useState<number | null>(null);
+    const frenzyTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const [screen, setScreen] = useState<Screen>("login");
     const [error, setError] = useState("");
     const [scoreResult, setScoreResult] = useState<{
@@ -66,7 +69,10 @@ export default function App() {
     const solo = useSoloMatch(auth.token);
 
     // cleanup
-    useEffect(() => () => socket.disconnect(), [socket.disconnect]);
+    useEffect(() => () => {
+        socket.disconnect();
+        if (frenzyTimerRef.current) clearInterval(frenzyTimerRef.current);
+    }, [socket.disconnect]);
 
     /* ── reconnection: check for active duel after login ── */
     const reconnectCheckedRef = useRef(false);
@@ -88,8 +94,10 @@ export default function App() {
                 setTimeout(() => socket.joinDuelRoom(resp.duel!.id), 300);
 
                 if (resp.duel.status === "WAITING") {
+                    if (resp.duel.mode) setDuelMode(resp.duel.mode);
                     setScreen("queue");
                 } else if (resp.duel.status === "ONGOING") {
+                    if (resp.duel.mode) setDuelMode(resp.duel.mode);
                     if (resp.duel.alreadySubmitted) {
                         await duel.refreshDuel(resp.duel.id);
                         duel.setSubmittedFlag(true);
@@ -162,7 +170,26 @@ export default function App() {
         s.on("duel:started", (msg: any) => {
             pushLog(`WS duel:started ${JSON.stringify(msg)}`);
             if (msg?.duelId) {
-                void duel.refreshDuel(String(msg.duelId)).then(() => setScreen("duel"));
+                void duel.refreshDuel(String(msg.duelId)).then(() => {
+                    setScreen("duel");
+                    // Start FRENZY timer once duel is on screen
+                    if (duelMode === "FRENZY") {
+                        setFrenzyTimeLeft(30);
+                        if (frenzyTimerRef.current) clearInterval(frenzyTimerRef.current);
+                        frenzyTimerRef.current = setInterval(() => {
+                            setFrenzyTimeLeft((t) => {
+                                if (t === null || t <= 1) {
+                                    clearInterval(frenzyTimerRef.current!);
+                                    frenzyTimerRef.current = null;
+                                    // Auto-submit when time runs out
+                                    void handleSubmit();
+                                    return 0;
+                                }
+                                return t - 1;
+                            });
+                        }, 1000);
+                    }
+                });
             }
         });
 
@@ -170,6 +197,8 @@ export default function App() {
             pushLog(`WS duel:finished ${JSON.stringify(msg)}`);
             if (msg?.duelId) {
                 duelFinishedRef.current = true;
+                if (frenzyTimerRef.current) { clearInterval(frenzyTimerRef.current); frenzyTimerRef.current = null; }
+                setFrenzyTimeLeft(null);
                 setDuelResult({
                     winnerId: msg.winnerId ?? null,
                     isDraw: msg.isDraw ?? false,
@@ -201,7 +230,7 @@ export default function App() {
             const resp = await api<QueueJoinResp>("/queue/join", {
                 method: "POST",
                 token: auth.token,
-                body: JSON.stringify({ theme }),
+                body: JSON.stringify({ theme, mode: duelMode }),
             });
 
             duel.setDuelId(resp.duelId);
@@ -278,6 +307,8 @@ export default function App() {
         duelFinishedRef.current = false;
         setExpandedQuestions(new Set());
         setError("");
+        setFrenzyTimeLeft(null);
+        if (frenzyTimerRef.current) { clearInterval(frenzyTimerRef.current); frenzyTimerRef.current = null; }
         setScreen("lobby");
     }
 
@@ -430,8 +461,8 @@ export default function App() {
                                 <img src="/logo.png" alt="Owlympiad" className="w-24 h-24 rounded-full" />
                             </div>
                             <h2 className="text-3xl font-bold text-stone-800 mb-2">Prêt pour un duel ?</h2>
-                            <p className="text-stone-500 mb-8">
-                                Affronte un adversaire sur <span className="text-amber-400 font-semibold">10 questions</span> de culture générale
+                            <p className="text-stone-500 mb-6">
+                                Affronte un adversaire en culture générale
                             </p>
 
                             {error && (
@@ -440,12 +471,50 @@ export default function App() {
                                 </div>
                             )}
 
+                            {/* Mode selector */}
+                            <div className="mb-6 grid grid-cols-2 gap-3">
+                                <button
+                                    onClick={() => setDuelMode("CLASSIC")}
+                                    className={`relative p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                                        duelMode === "CLASSIC"
+                                            ? "border-amber-500 bg-amber-500/10"
+                                            : "border-stone-200 bg-stone-50 hover:border-amber-300"
+                                    }`}
+                                >
+                                    <div className="text-2xl mb-1">⚔️</div>
+                                    <div className="font-bold text-stone-800 text-sm">Classique</div>
+                                    <div className="text-xs text-stone-500 mt-0.5">10 questions, pas de limite de temps</div>
+                                    {duelMode === "CLASSIC" && (
+                                        <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500" />
+                                    )}
+                                </button>
+                                <button
+                                    onClick={() => setDuelMode("FRENZY")}
+                                    className={`relative p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                                        duelMode === "FRENZY"
+                                            ? "border-red-500 bg-red-500/10"
+                                            : "border-stone-200 bg-stone-50 hover:border-red-300"
+                                    }`}
+                                >
+                                    <div className="text-2xl mb-1">🔥</div>
+                                    <div className="font-bold text-stone-800 text-sm">Frénésie</div>
+                                    <div className="text-xs text-stone-500 mt-0.5">30 questions en 30 secondes !</div>
+                                    {duelMode === "FRENZY" && (
+                                        <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />
+                                    )}
+                                </button>
+                            </div>
+
                             <button
                                 onClick={joinQueue}
-                                className="w-full py-4 text-lg bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-400 hover:to-sky-400 text-white font-bold rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
+                                className={`w-full py-4 text-lg text-white font-bold rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3 ${
+                                    duelMode === "FRENZY"
+                                        ? "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 shadow-red-500/25 hover:shadow-red-500/40"
+                                        : "bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-400 hover:to-sky-400 shadow-amber-500/25 hover:shadow-amber-500/40"
+                                }`}
                             >
-                                <span className="text-xl">⚡</span>
-                                Lancer un duel
+                                <span className="text-xl">{duelMode === "FRENZY" ? "🔥" : "⚡"}</span>
+                                {duelMode === "FRENZY" ? "Lancer Frénésie" : "Lancer un duel"}
                             </button>
 
                             <button
@@ -467,12 +536,22 @@ export default function App() {
                 {/* ─── QUEUE / WAITING ─── */}
                 {screen === "queue" && (
                     <div className="w-full max-w-md">
-                        <div className="bg-white/90 backdrop-blur border border-amber-400/40 rounded-2xl p-8 shadow-2xl text-center"
+                        <div className={`bg-white/90 backdrop-blur border rounded-2xl p-8 shadow-2xl text-center ${
+                            duelMode === "FRENZY" ? "border-red-400/40" : "border-amber-400/40"
+                        }`}
                              style={{ animation: "pulse-glow 2s infinite" }}>
                             <div className="mb-6">
-                                <div className="w-16 h-16 mx-auto rounded-full border-4 border-amber-500 border-t-transparent animate-spin" />
+                                <div className={`w-16 h-16 mx-auto rounded-full border-4 border-t-transparent animate-spin ${
+                                    duelMode === "FRENZY" ? "border-red-500" : "border-amber-500"
+                                }`} />
                             </div>
+                            <div className="text-3xl mb-2">{duelMode === "FRENZY" ? "🔥" : "⚡"}</div>
                             <h2 className="text-2xl font-bold text-stone-800 mb-2">Recherche d'un adversaire…</h2>
+                            <p className={`text-sm font-semibold mb-1 ${
+                                duelMode === "FRENZY" ? "text-red-500" : "text-amber-500"
+                            }`}>
+                                Mode {duelMode === "FRENZY" ? "Frénésie 🔥" : "Classique ⚔️"}
+                            </p>
                             <p className="text-stone-500 mb-8">
                                 Partage le lien avec un ami pour jouer ensemble !
                             </p>
@@ -489,6 +568,18 @@ export default function App() {
                 {/* ─── DUEL GAMEPLAY ─── */}
                 {screen === "duel" && currentQ && (
                     <div className="w-full max-w-2xl">
+                        {/* FRENZY timer */}
+                        {duelMode === "FRENZY" && frenzyTimeLeft !== null && (
+                            <div className={`mb-4 flex items-center justify-center gap-3 px-5 py-3 rounded-xl font-bold text-xl ${
+                                frenzyTimeLeft <= 10
+                                    ? "bg-red-500/15 border border-red-500/40 text-red-600 animate-pulse"
+                                    : "bg-orange-500/10 border border-orange-400/30 text-orange-600"
+                            }`}>
+                                <span>⏱</span>
+                                <span>{frenzyTimeLeft}s</span>
+                                <span className="text-sm font-normal text-stone-500">— réponds vite !</span>
+                            </div>
+                        )}
                         {/* progress bar */}
                         <div className="mb-6">
                             <div className="flex items-center justify-between mb-2">

@@ -23,6 +23,8 @@ export type DuelResp = {
     duel: {
         id: string;
         theme: string;
+        mode: "CLASSIC" | "FRENZY";
+        durationSec: number | null;
         status: "WAITING" | "ONGOING" | "FINISHED" | "CANCELED";
         players: { userId: string; joinedAt: string }[];
         questions: DuelQuestion[];
@@ -66,6 +68,8 @@ export type ActiveDuelResp = {
     duel: {
         id: string;
         theme: string;
+        mode: "CLASSIC" | "FRENZY";
+        durationSec: number | null;
         status: "WAITING" | "ONGOING";
         alreadySubmitted: boolean;
         players: { userId: string; joinedAt: string }[];
