@@ -71,7 +71,7 @@ export async function createWaitingDuel(params: {
     durationSec?: number;
 }): Promise<ServiceResult<{ duelId: string; theme: string; status: string; mode: string }>> {
     const mode = params.mode ?? "CLASSIC";
-    const durationSec = params.durationSec ?? (mode === "FRENZY" ? 30 : undefined);
+    const durationSec = params.durationSec ?? (mode === "FRENZY" ? 60 : undefined);
     const duel = await duelsRepo.createWaiting(params.userId, params.theme, mode, durationSec);
 
     return ok({ duelId: duel.id, theme: duel.theme, status: duel.status, mode: duel.mode });

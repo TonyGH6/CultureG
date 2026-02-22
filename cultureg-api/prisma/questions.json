@@ -702,5 +702,383 @@
       { "label": "Bernin", "isCorrect": false },
       { "label": "Rodin", "isCorrect": false }
     ]
+  },
+  {
+    "slug": "geo-everest-hauteur",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la hauteur officielle du mont Everest selon les mesures de 2020 ?",
+    "explanation": "En 2020, la Chine et le Népal ont annoncé une hauteur officielle de 8 849 mètres pour le mont Everest, après de nouvelles mesures. Cette valeur est désormais reconnue internationalement.",
+    "difficulty": 2,
+    "options": [
+      { "label": "8 948 m", "isCorrect": false },
+      { "label": "8 849 m", "isCorrect": true },
+      { "label": "9 898 m", "isCorrect": false },
+      { "label": "6 489 m", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-lac-plus-grand",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel est le plus grand lac du monde en superficie ?",
+    "explanation": "La mer Caspienne est considérée comme le plus grand lac du monde, avec une superficie d’environ 371 000 km². Bien qu’elle soit appelée « mer », il s’agit d’un lac salé fermé, situé entre l’Europe et l’Asie.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Lac Supérieur", "isCorrect": false },
+      { "label": "Mer Caspienne", "isCorrect": true },
+      { "label": "Mer d'Aral", "isCorrect": false },
+      { "label": "Lac Baïkal", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "cinema-oscar-film-2023",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel film a remporté l’Oscar du meilleur film en 2023 ?",
+    "explanation": "En 2023, le film « Everything Everywhere All at Once » a remporté l’Oscar du meilleur film, ainsi que plusieurs autres récompenses majeures. Il s’agit d’une comédie de science-fiction réalisée par Daniel Kwan et Daniel Scheinert.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Avatar : La voie de l'eau", "isCorrect": false },
+      { "label": "Everything Everywhere All at Once", "isCorrect": true },
+      { "label": "Top Gun : Maverick", "isCorrect": false },
+      { "label": "The Fabelmans", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "cinema-cannes-palme-2023",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel film a remporté la Palme d’or au Festival de Cannes en 2023 ?",
+    "explanation": "En 2023, le film « Anatomie d’une chute » réalisé par Justine Triet a remporté la Palme d’or au Festival de Cannes. Ce thriller judiciaire français a été salué pour son scénario et la performance de Sandra Hüller.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Anatomie d’une chute", "isCorrect": true },
+      { "label": "The Zone of Interest", "isCorrect": false },
+      { "label": "Killers of the Flower Moon", "isCorrect": false },
+      { "label": "Jeanne du Barry", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "cinema-acteur-oscar-2019",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel acteur a remporté l’Oscar du meilleur acteur en 2019 ?",
+    "explanation": "En 2019, Rami Malek a remporté l’Oscar du meilleur acteur pour son interprétation de Freddie Mercury dans le film « Bohemian Rhapsody ». Sa performance a été saluée par la critique et le public.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Christian Bale (Vice)", "isCorrect": false },
+      { "label": "Rami Malek (Bohemian Rhapsody)", "isCorrect": true },
+      { "label": "Bradley Cooper (A Star Is Born)", "isCorrect": false },
+      { "label": "Viggo Mortensen (Green Book)", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "cinema-acteur-oscar-2015",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel acteur a remporté l’Oscar du meilleur acteur en 2015 ?",
+    "explanation": "En 2015, Eddie Redmayne a remporté l’Oscar du meilleur acteur pour son interprétation de Stephen Hawking dans le film « The Theory of Everything » (« Une merveilleuse histoire du temps »).",
+    "difficulty": 2,
+    "options": [
+      { "label": "Steve Carell (Foxcatcher)", "isCorrect": false },
+      { "label": "Eddie Redmayne (The Theory of Everything)", "isCorrect": true },
+      { "label": "Benedict Cumberbatch (The Imitation Game)", "isCorrect": false },
+      { "label": "Bradley Cooper (American Sniper)", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-roi-france-1515",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel roi est monté sur le trône de France en 1515 ?",
+    "explanation": "François Ier est devenu roi de France en 1515, succédant à Louis XII. Son règne marque le début de la Renaissance française, avec le développement des arts et des lettres.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Henri IV", "isCorrect": false },
+      { "label": "François Ier", "isCorrect": true },
+      { "label": "Louis XIV", "isCorrect": false },
+      { "label": "Charles IX", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "jeu-video-mario-console-premiere",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Sur quelle console est sorti le jeu « Super Mario Bros. » pour la première fois ?",
+    "explanation": "« Super Mario Bros. » est sorti pour la première fois en 1985 sur la Nintendo Entertainment System (NES). Ce jeu a marqué l’histoire du jeu vidéo et popularisé la NES dans le monde entier.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Super Nintendo (SNES)", "isCorrect": false },
+      { "label": "Nintendo Entertainment System (NES)", "isCorrect": true },
+      { "label": "Game Boy", "isCorrect": false },
+      { "label": "Atari 2600", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "jeu-video-tetris-createur",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Qui est le créateur du jeu vidéo Tetris ?",
+    "explanation": "Tetris a été inventé en 1984 par Alexey Pajitnov, un ingénieur informatique russe. Ce jeu de puzzle est devenu l’un des plus populaires et influents de l’histoire du jeu vidéo.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Shigeru Miyamoto", "isCorrect": false },
+      { "label": "Alexey Pajitnov", "isCorrect": true },
+      { "label": "Hideo Kojima", "isCorrect": false },
+      { "label": "Will Wright", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "sport-jeux-olympiques-ville-2024",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Dans quelle ville se déroulent les Jeux olympiques d'été 2024 ?",
+    "explanation": "Les Jeux olympiques d'été 2024 se tiennent à Paris, marquant le retour des JO dans la capitale française un siècle après la dernière édition parisienne en 1924.",
+    "difficulty": 1,
+    "options": [
+      { "label": "Londres", "isCorrect": false },
+      { "label": "Los Angeles", "isCorrect": false },
+      { "label": "Paris", "isCorrect": true },
+      { "label": "Tokyo", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "actu-covid-vaccin-2020",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel a été le premier vaccin contre la COVID-19 autorisé en Europe fin 2020 ?",
+    "explanation": "Le vaccin Comirnaty, développé par Pfizer-BioNTech, a été le premier vaccin contre la COVID-19 autorisé en Europe en décembre 2020. Il utilise la technologie de l’ARN messager.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Moderna", "isCorrect": false },
+      { "label": "AstraZeneca", "isCorrect": false },
+      { "label": "Pfizer-BioNTech", "isCorrect": true },
+      { "label": "Johnson & Johnson", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "sciences-humaines-pyramide-maslow",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel psychologue est à l’origine de la pyramide des besoins, souvent utilisée en management et en psychologie ?",
+    "explanation": "Abraham Maslow a proposé en 1943 la pyramide des besoins, un modèle hiérarchisant les besoins humains de la survie à l’accomplissement de soi. Ce modèle est largement utilisé en psychologie et en management.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Sigmund Freud", "isCorrect": false },
+      { "label": "Abraham Maslow", "isCorrect": true },
+      { "label": "Carl Jung", "isCorrect": false },
+      { "label": "Jean Piaget", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "pop-culture-serie-plus-vue-netflix",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle série détient le record de la série la plus vue sur Netflix lors de sa première saison (en 2021) ?",
+    "explanation": "« Squid Game », série sud-coréenne sortie en 2021, a battu tous les records d’audience sur Netflix avec plus de 100 millions de foyers ayant regardé la série dans le premier mois.",
+    "difficulty": 2,
+    "options": [
+      { "label": "La Casa de Papel", "isCorrect": false },
+      { "label": "Squid Game", "isCorrect": true },
+      { "label": "Stranger Things", "isCorrect": false },
+      { "label": "Bridgerton", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-capitale-afrique-sud",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la capitale administrative de l’Afrique du Sud ?",
+    "explanation": "Pretoria est la capitale administrative de l’Afrique du Sud, tandis que Le Cap est la capitale législative et Bloemfontein la capitale judiciaire.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Le Cap", "isCorrect": false },
+      { "label": "Johannesburg", "isCorrect": false },
+      { "label": "Pretoria", "isCorrect": true },
+      { "label": "Durban", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-chute-empire-romain",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "En quelle année l’Empire romain d’Occident a-t-il pris fin ?",
+    "explanation": "L’Empire romain d’Occident a pris fin en 476 après J.-C., avec la déposition du dernier empereur, Romulus Augustule.",
+    "difficulty": 1,
+    "options": [
+      { "label": "395", "isCorrect": false },
+      { "label": "410", "isCorrect": false },
+      { "label": "476", "isCorrect": true },
+      { "label": "529", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-physique-unite-pression",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est l’unité de mesure de la pression dans le Système international ?",
+    "explanation": "L’unité de mesure de la pression dans le Système international est le pascal (Pa), équivalent à un newton par mètre carré.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Bar", "isCorrect": false },
+      { "label": "Pascal", "isCorrect": true },
+      { "label": "Atmosphère", "isCorrect": false },
+      { "label": "Torr", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "sport-football-ballon-or-2022",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel joueur a remporté le Ballon d’Or en 2022 ?",
+    "explanation": "Karim Benzema a remporté le Ballon d’Or 2022 après une saison exceptionnelle avec le Real Madrid.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Lionel Messi", "isCorrect": false },
+      { "label": "Karim Benzema", "isCorrect": true },
+      { "label": "Kylian Mbappé", "isCorrect": false },
+      { "label": "Robert Lewandowski", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "pop-culture-manga-plus-vendu",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel est le manga le plus vendu de tous les temps ?",
+    "explanation": "One Piece, créé par Eiichirō Oda, est le manga le plus vendu au monde, avec plus de 500 millions d’exemplaires écoulés.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Naruto", "isCorrect": false },
+      { "label": "Dragon Ball", "isCorrect": false },
+      { "label": "One Piece", "isCorrect": true },
+      { "label": "Bleach", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "science-mathematiques-nombre-pi",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle est la valeur approchée de π (pi) à cinq décimales près ?",
+    "explanation": "Le nombre π (pi) est une constante mathématique irrationnelle, dont la valeur approchée à cinq décimales est 3,14159.",
+    "difficulty": 3,
+    "options": [
+      { "label": "3,14159", "isCorrect": true },
+      { "label": "3,14192", "isCorrect": false },
+      { "label": "3,14195", "isCorrect": false },
+      { "label": "3,14149", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-premiere-femme-espace",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Qui fut la première femme à voyager dans l’espace ?",
+    "explanation": "Valentina Terechkova, cosmonaute soviétique, est devenue la première femme à voyager dans l’espace en 1963 à bord de Vostok 6.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Sally Ride", "isCorrect": false },
+      { "label": "Valentina Terechkova", "isCorrect": true },
+      { "label": "Mae Jemison", "isCorrect": false },
+      { "label": "Claudie Haigneré", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "litterature-prix-goncourt-2022",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel roman a remporté le prix Goncourt en 2022 ?",
+    "explanation": "Le prix Goncourt 2022 a été attribué à Brigitte Giraud pour son roman « Vivre vite ». Il s’agit du plus prestigieux prix littéraire français.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Vivre vite", "isCorrect": true },
+      { "label": "La plus secrète mémoire des hommes", "isCorrect": false },
+      { "label": "Chanson douce", "isCorrect": false },
+      { "label": "L’anomalie", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "musique-chanson-plus-ecoutee-2020",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quelle chanson a été la plus écoutée dans le monde sur Spotify en 2020 ?",
+    "explanation": "« Blinding Lights » de The Weeknd a été la chanson la plus écoutée sur Spotify dans le monde en 2020.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Dance Monkey (Tones and I)", "isCorrect": false },
+      { "label": "Blinding Lights (The Weeknd)", "isCorrect": true },
+      { "label": "Don't Start Now (Dua Lipa)", "isCorrect": false },
+      { "label": "Roses (SAINt JHN)", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "sciences-humaines-milgram",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel psychologue est célèbre pour son expérience sur l’obéissance à l’autorité menée dans les années 1960 ?",
+    "explanation": "Stanley Milgram a mené une expérience célèbre sur l’obéissance à l’autorité, montrant que des individus ordinaires pouvaient infliger des souffrances à autrui sous l’ordre d’une autorité.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Philip Zimbardo", "isCorrect": false },
+      { "label": "Stanley Milgram", "isCorrect": true },
+      { "label": "Solomon Asch", "isCorrect": false },
+      { "label": "John Watson", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "geo-pays-plus-peuple",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel est le pays le plus peuplé du monde en 2025 ?",
+    "explanation": "En 2025, l’Inde est devenue le pays le plus peuplé du monde, dépassant la Chine.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Chine", "isCorrect": false },
+      { "label": "Inde", "isCorrect": true },
+      { "label": "États-Unis", "isCorrect": false },
+      { "label": "Indonésie", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "histoire-republique-weimar",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "La République de Weimar désigne l’Allemagne entre quelles années ?",
+    "explanation": "La République de Weimar désigne l’Allemagne de 1919 à 1933, période marquée par l’instabilité politique et économique. Elle doit son nom à la ville de Weimar, où l’Assemblée constituante s’est réunie en 1919 pour rédiger la nouvelle constitution, Berlin étant alors trop instable.",
+    "difficulty": 3,
+    "options": [
+      { "label": "1914-1939", "isCorrect": false },
+      { "label": "1919-1933", "isCorrect": true },
+      { "label": "1920-1945", "isCorrect": false },
+      { "label": "1933-1945", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "sport-tennis-roland-garros-2023",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Qui a remporté le tournoi de Roland-Garros en simple messieurs en 2023 ?",
+    "explanation": "Novak Djokovic a remporté Roland-Garros 2023 en simple messieurs, décrochant ainsi son 23e titre du Grand Chelem.",
+    "difficulty": 3,
+    "options": [
+      { "label": "Rafael Nadal", "isCorrect": false },
+      { "label": "Carlos Alcaraz", "isCorrect": false },
+      { "label": "Novak Djokovic", "isCorrect": true },
+      { "label": "Casper Ruud", "isCorrect": false }
+    ]
+  },
+  {
+    "slug": "pop-culture-jeu-video-plus-vendu",
+    "theme": "general",
+    "type": "QCM",
+    "prompt": "Quel est le jeu vidéo le plus vendu de tous les temps ?",
+    "explanation": "Minecraft est le jeu vidéo le plus vendu de tous les temps, avec plus de 300 millions d’exemplaires écoulés dans le monde.",
+    "difficulty": 2,
+    "options": [
+      { "label": "Tetris", "isCorrect": false },
+      { "label": "Minecraft", "isCorrect": true },
+      { "label": "Grand Theft Auto V", "isCorrect": false },
+      { "label": "Wii Sports", "isCorrect": false }
+    ]
   }
 ]

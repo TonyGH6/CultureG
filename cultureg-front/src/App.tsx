@@ -175,7 +175,7 @@ export default function App() {
                     setScreen("duel");
                     // Start FRENZY timer once duel is on screen
                     if (duelMode === "FRENZY") {
-                        setFrenzyTimeLeft(30);
+                        setFrenzyTimeLeft(duel.durationSec ?? 60);
                         if (frenzyTimerRef.current) clearInterval(frenzyTimerRef.current);
                         frenzyTimerRef.current = setInterval(() => {
                             setFrenzyTimeLeft((t) => {

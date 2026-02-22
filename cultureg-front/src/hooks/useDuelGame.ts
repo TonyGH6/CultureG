@@ -4,6 +4,7 @@ import { api, type DuelResp, type DuelQuestion } from "../api";
 export function useDuelGame(token: string, onLog: (msg: string) => void) {
     const [duelId, setDuelId] = useState("");
     const [duelStatus, setDuelStatus] = useState("");
+    const [durationSec, setDurationSec] = useState<number | null>(null);
     const [playersCount, setPlayersCount] = useState(0);
     const [questionsCount, setQuestionsCount] = useState(0);
     const [duelQuestions, setDuelQuestions] = useState<DuelQuestion[]>([]);
@@ -18,6 +19,7 @@ export function useDuelGame(token: string, onLog: (msg: string) => void) {
 
             const resp = await api<DuelResp>(`/duels/${did}`, { method: "GET", token });
             setDuelStatus(resp.duel.status);
+            setDurationSec(resp.duel.durationSec ?? null);
             setPlayersCount(resp.duel.players.length);
             setQuestionsCount(resp.duel.questions.length);
             setDuelQuestions(resp.duel.questions);
@@ -66,6 +68,7 @@ export function useDuelGame(token: string, onLog: (msg: string) => void) {
     const resetDuel = useCallback(() => {
         setDuelId("");
         setDuelStatus("");
+        setDurationSec(null);
         setPlayersCount(0);
         setQuestionsCount(0);
         setDuelQuestions([]);
@@ -78,6 +81,7 @@ export function useDuelGame(token: string, onLog: (msg: string) => void) {
         duelId,
         setDuelId,
         duelStatus,
+        durationSec,
         playersCount,
         questionsCount,
         duelQuestions,
