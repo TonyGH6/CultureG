@@ -55,7 +55,7 @@ export async function join(input: JoinQueueInput): Promise<ServiceResult<JoinQue
 
     // No opponent → create WAITING duel + enqueue
     if (!result.found) {
-        const durationSec = mode === "FRENZY" ? 30 : undefined;
+        const durationSec = mode === "FRENZY" ? 60 : undefined;
         const created = await duelService.createWaitingDuel({ userId, theme, mode, durationSec });
 
         if (!created.ok) {
