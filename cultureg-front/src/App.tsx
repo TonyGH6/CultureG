@@ -296,12 +296,12 @@ export default function App() {
 
     /* ───────────────────── RENDER ───────────────────── */
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 flex flex-col">
+        <div className="min-h-screen bg-cover bg-center bg-no-repeat flex flex-col" style={{ backgroundImage: "url('/backround.png')" }}>
             {/* HEADER */}
             <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800/60">
                 <div className="flex items-center gap-3">
                     <img src="/logo.png" alt="Owlympiad" className="w-10 h-10 rounded-full" />
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-sky-400 bg-clip-text text-transparent">
+                    <h1 className="text-2xl font-bold text-amber-400">
                         Owlympiad
                     </h1>
                 </div>
