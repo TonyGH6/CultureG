@@ -167,15 +167,17 @@ export default function App() {
         s.off("duel:started");
         s.off("duel:finished");
         s.off("duel:expired");
+        s.off("duel:timeout");
 
         s.on("duel:started", (msg: any) => {
             pushLog(`WS duel:started ${JSON.stringify(msg)}`);
             if (msg?.duelId) {
                 void duel.refreshDuel(String(msg.duelId)).then(() => {
                     setScreen("duel");
-                    // Start FRENZY timer once duel is on screen
+                    // Start FRENZY display timer (UI only — submit is triggered by duel:timeout from server)
                     if (duelMode === "FRENZY") {
-                        setFrenzyTimeLeft(duel.durationSec ?? 60);
+                        const duration = msg.durationSec ?? duel.durationSec ?? 60;
+                        setFrenzyTimeLeft(duration);
                         if (frenzyTimerRef.current) clearInterval(frenzyTimerRef.current);
                         frenzyTimerRef.current = setInterval(() => {
                             setFrenzyTimeLeft((t) => {
@@ -190,6 +192,14 @@ export default function App() {
                     }
                 });
             }
+        });
+
+        // Server signals time is up → submit immediately
+        s.on("duel:timeout", (msg: any) => {
+            pushLog(`WS duel:timeout ${JSON.stringify(msg)}`);
+            if (frenzyTimerRef.current) { clearInterval(frenzyTimerRef.current); frenzyTimerRef.current = null; }
+            setFrenzyTimeLeft(0);
+            void handleSubmitRef.current();
         });
 
         s.on("duel:finished", (msg: any) => {
@@ -301,12 +311,7 @@ export default function App() {
     // Keep ref always pointing to latest handleSubmit (avoids stale closures in timer)
     handleSubmitRef.current = handleSubmit;
 
-    // Auto-submit when FRENZY timer hits 0
-    useEffect(() => {
-        if (frenzyTimeLeft === 0 && duelMode === "FRENZY" && screen === "duel") {
-            void handleSubmitRef.current();
-        }
-    }, [frenzyTimeLeft]);
+    // frenzyTimeLeft reaching 0 is display-only; actual submit is triggered by duel:timeout from server
 
     function playAgain() {
         duel.resetDuel();
