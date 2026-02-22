@@ -90,6 +90,8 @@ model MatchAnswer {
 model Duel {
   id         String         @id @default(uuid())
   theme      String
+  mode       DuelMode       @default(CLASSIC)
+  durationSec Int?
   status     DuelStatus     @default(WAITING)
   createdAt  DateTime       @default(now())
   startedAt  DateTime?
@@ -152,4 +154,9 @@ enum DuelStatus {
   ONGOING
   FINISHED
   CANCELED
+}
+
+enum DuelMode {
+  CLASSIC
+  FRENZY
 }

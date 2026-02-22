@@ -12,6 +12,7 @@ export async function join(req: AuthRequest, res: Response) {
     const result = await queueService.join({
         userId: req.userId!,
         theme: parsed.data.theme,
+        mode: parsed.data.mode,
     });
 
     if (!result.ok) return res.status(result.status).json({ error: result.error });

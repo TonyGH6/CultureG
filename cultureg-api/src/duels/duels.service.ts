@@ -67,10 +67,14 @@ export async function getActiveDuel(params: {
 export async function createWaitingDuel(params: {
     userId: string;
     theme: string;
-}): Promise<ServiceResult<{ duelId: string; theme: string; status: string }>> {
-    const duel = await duelsRepo.createWaiting(params.userId, params.theme);
+    mode?: string;
+    durationSec?: number;
+}): Promise<ServiceResult<{ duelId: string; theme: string; status: string; mode: string }>> {
+    const mode = params.mode ?? "CLASSIC";
+    const durationSec = params.durationSec ?? (mode === "FRENZY" ? 30 : undefined);
+    const duel = await duelsRepo.createWaiting(params.userId, params.theme, mode, durationSec);
 
-    return ok({ duelId: duel.id, theme: duel.theme, status: duel.status });
+    return ok({ duelId: duel.id, theme: duel.theme, status: duel.status, mode: duel.mode });
 }
 
 export async function joinAndStartDuel(params: {
@@ -79,13 +83,16 @@ export async function joinAndStartDuel(params: {
     theme: string;
     limit: number;
 }): Promise<ServiceResult<{ duelId: string }>> {
-    const { duelId, joinerUserId, theme, limit } = params;
+    const { duelId, joinerUserId, theme } = params;
 
     const duel = await duelsRepo.findById(duelId);
 
     if (!duel) return err(404, "Duel not found");
     if (duel.theme !== theme) return err(400, "Theme mismatch");
     if (duel.status !== "WAITING") return err(400, "Duel is not joinable");
+
+    // FRENZY gets 30 questions, CLASSIC gets 10
+    const limit = duel.mode === "FRENZY" ? 30 : params.limit;
 
     const alreadyIn = duel.players.some((p) => p.userId === joinerUserId);
     if (alreadyIn) return err(400, "Already joined");

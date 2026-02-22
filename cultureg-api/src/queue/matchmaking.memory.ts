@@ -3,6 +3,7 @@
 export type QueueEntry = {
     userId: string;
     theme: string;
+    mode: string;
     elo: number;
     duelId: string;
     joinedAt: number;
@@ -19,29 +20,33 @@ export type MatchNotFound = {
 };
 
 const queues = new Map<string, QueueEntry[]>();
-const userToTheme = new Map<string, string>();
+const userToKey = new Map<string, string>();
 
-function getQueue(theme: string): QueueEntry[] {
-    const q = queues.get(theme);
+function queueKey(theme: string, mode: string): string {
+    return `${theme}:${mode}`;
+}
+
+function getQueue(key: string): QueueEntry[] {
+    const q = queues.get(key);
     if (q) return q;
     const fresh: QueueEntry[] = [];
-    queues.set(theme, fresh);
+    queues.set(key, fresh);
     return fresh;
 }
 
-export function getQueueSize(theme: string): number {
-    return getQueue(theme).length;
+export function getQueueSize(theme: string, mode: string = "CLASSIC"): number {
+    return getQueue(queueKey(theme, mode)).length;
 }
 
 export function leaveQueue(userId: string): void {
-    const theme = userToTheme.get(userId);
-    if (!theme) return;
+    const key = userToKey.get(userId);
+    if (!key) return;
 
-    const q = getQueue(theme);
+    const q = getQueue(key);
     const idx = q.findIndex((e) => e.userId === userId);
     if (idx >= 0) q.splice(idx, 1);
 
-    userToTheme.delete(userId);
+    userToKey.delete(userId);
 }
 
 /**
@@ -51,13 +56,15 @@ export function leaveQueue(userId: string): void {
 export function joinQueue(params: {
     userId: string;
     theme: string;
+    mode: string;
     elo: number;
 }): MatchFound | MatchNotFound {
-    const { userId, theme, elo } = params;
+    const { userId, theme, mode, elo } = params;
 
     leaveQueue(userId);
 
-    const q = getQueue(theme);
+    const key = queueKey(theme, mode);
+    const q = getQueue(key);
     let bestIdx = -1;
     let bestDiff = Number.POSITIVE_INFINITY;
 
@@ -74,7 +81,7 @@ export function joinQueue(params: {
 
     if (bestIdx >= 0) {
         const opponent = q.splice(bestIdx, 1)[0];
-        userToTheme.delete(opponent.userId);
+        userToKey.delete(opponent.userId);
 
         return {
             found: true,
@@ -92,14 +99,16 @@ export function joinQueue(params: {
 export function enqueueWaiting(params: {
     userId: string;
     theme: string;
+    mode: string;
     elo: number;
     duelId: string;
 }): void {
-    const { userId, theme, elo, duelId } = params;
+    const { userId, theme, mode, elo, duelId } = params;
 
     leaveQueue(userId);
 
-    const q = getQueue(theme);
-    q.push({ userId, theme, elo, duelId, joinedAt: Date.now() });
-    userToTheme.set(userId, theme);
+    const key = queueKey(theme, mode);
+    const q = getQueue(key);
+    q.push({ userId, theme, mode, elo, duelId, joinedAt: Date.now() });
+    userToKey.set(userId, key);
 }

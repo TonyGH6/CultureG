@@ -10,11 +10,12 @@ export async function findOngoingDuelForUser(userId: string) {
     });
 }
 
-export async function findWaitingDuelForUserAndTheme(userId: string, theme: string) {
+export async function findWaitingDuelForUserAndTheme(userId: string, theme: string, mode: string = "CLASSIC") {
     return prisma.duel.findFirst({
         where: {
             status: "WAITING",
             theme,
+            mode: mode as any,
             players: { some: { userId } },
         },
         select: { id: true },

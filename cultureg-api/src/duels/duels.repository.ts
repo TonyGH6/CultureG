@@ -10,6 +10,8 @@ export async function findActiveDuelForUser(userId: string) {
         select: {
             id: true,
             theme: true,
+            mode: true,
+            durationSec: true,
             status: true,
             createdAt: true,
             startedAt: true,
@@ -54,6 +56,8 @@ export async function findByIdForUser(duelId: string, userId: string) {
         select: {
             id: true,
             theme: true,
+            mode: true,
+            durationSec: true,
             status: true,
             createdAt: true,
             startedAt: true,
@@ -113,6 +117,8 @@ export async function findById(duelId: string) {
             id: true,
             status: true,
             theme: true,
+            mode: true,
+            durationSec: true,
             players: { select: { userId: true } },
             questions: { select: { id: true } },
         },
@@ -120,14 +126,16 @@ export async function findById(duelId: string) {
 }
 
 /** Create a WAITING duel */
-export async function createWaiting(userId: string, theme: string) {
+export async function createWaiting(userId: string, theme: string, mode: string = "CLASSIC", durationSec?: number) {
     return prisma.duel.create({
         data: {
             theme,
+            mode: mode as any,
+            durationSec: durationSec ?? null,
             status: "WAITING",
             players: { create: [{ userId }] },
         },
-        select: { id: true, theme: true, status: true },
+        select: { id: true, theme: true, status: true, mode: true, durationSec: true },
     });
 }
 

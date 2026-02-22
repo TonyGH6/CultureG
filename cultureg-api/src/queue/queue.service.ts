@@ -11,14 +11,15 @@ import * as duelService from "../duels/duels.service";
 type JoinQueueInput = {
     userId: string;
     theme: string;
+    mode: string;
 };
 
 type JoinQueueResult =
-    | { queued: true; theme: string; duelId: string; queueSize: number }
-    | { queued: false; matched: true; theme: string; duelId: string; opponentUserId: string };
+    | { queued: true; theme: string; mode: string; duelId: string; queueSize: number }
+    | { queued: false; matched: true; theme: string; mode: string; duelId: string; opponentUserId: string };
 
 export async function join(input: JoinQueueInput): Promise<ServiceResult<JoinQueueResult>> {
-    const { userId, theme } = input;
+    const { userId, theme, mode } = input;
 
     // Guard: already in ongoing duel
     const existingOngoing = await queueRepo.findOngoingDuelForUser(userId);
@@ -26,14 +27,15 @@ export async function join(input: JoinQueueInput): Promise<ServiceResult<JoinQue
         return err(409, "Already in an ongoing duel");
     }
 
-    // Guard: already has a WAITING duel for this theme
-    const existingWaiting = await queueRepo.findWaitingDuelForUserAndTheme(userId, theme);
+    // Guard: already has a WAITING duel for this theme+mode
+    const existingWaiting = await queueRepo.findWaitingDuelForUserAndTheme(userId, theme, mode);
     if (existingWaiting) {
         const elo = await queueRepo.getUserElo(userId);
 
         enqueueWaiting({
             userId,
             theme,
+            mode,
             elo,
             duelId: existingWaiting.id,
         });
@@ -41,18 +43,20 @@ export async function join(input: JoinQueueInput): Promise<ServiceResult<JoinQue
         return ok({
             queued: true as const,
             theme,
+            mode,
             duelId: existingWaiting.id,
-            queueSize: getQueueSize(theme),
+            queueSize: getQueueSize(theme, mode),
         });
     }
 
     const elo = await queueRepo.getUserElo(userId);
 
-    const result = joinQueue({ userId, theme, elo });
+    const result = joinQueue({ userId, theme, mode, elo });
 
     // No opponent → create WAITING duel + enqueue
     if (!result.found) {
-        const created = await duelService.createWaitingDuel({ userId, theme });
+        const durationSec = mode === "FRENZY" ? 30 : undefined;
+        const created = await duelService.createWaitingDuel({ userId, theme, mode, durationSec });
 
         if (!created.ok) {
             return err(400, "Could not create duel");
@@ -61,6 +65,7 @@ export async function join(input: JoinQueueInput): Promise<ServiceResult<JoinQue
         enqueueWaiting({
             userId,
             theme,
+            mode,
             elo,
             duelId: created.duelId,
         });
@@ -68,8 +73,9 @@ export async function join(input: JoinQueueInput): Promise<ServiceResult<JoinQue
         return ok({
             queued: true as const,
             theme,
+            mode,
             duelId: created.duelId,
-            queueSize: getQueueSize(theme),
+            queueSize: getQueueSize(theme, mode),
         });
     }
 
@@ -89,6 +95,7 @@ export async function join(input: JoinQueueInput): Promise<ServiceResult<JoinQue
         queued: false as const,
         matched: true as const,
         theme,
+        mode,
         duelId: result.opponentDuelId,
         opponentUserId: result.opponentUserId,
     });

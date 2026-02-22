@@ -10,6 +10,8 @@ export type DuelQuestionDto = {
 export type ActiveDuelDto = {
     id: string;
     theme: string;
+    mode: string;
+    durationSec: number | null;
     status: string;
     createdAt: Date;
     startedAt: Date | null;
@@ -21,6 +23,8 @@ export type ActiveDuelDto = {
 export type DuelDetailDto = {
     id: string;
     theme: string;
+    mode: string;
+    durationSec: number | null;
     status: string;
     createdAt: Date;
     startedAt: Date | null;
@@ -61,6 +65,8 @@ export function toActiveDuelDto(
     duel: {
         id: string;
         theme: string;
+        mode: string;
+        durationSec: number | null;
         status: string;
         createdAt: Date;
         startedAt: Date | null;
@@ -79,6 +85,8 @@ export function toActiveDuelDto(
 export function toDuelDetailDto(duel: {
     id: string;
     theme: string;
+    mode: string;
+    durationSec: number | null;
     status: string;
     createdAt: Date;
     startedAt: Date | null;

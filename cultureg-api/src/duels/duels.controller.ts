@@ -16,6 +16,7 @@ export async function getActive(req: AuthRequest, res: Response) {
         enqueueWaiting({
             userId: req.userId!,
             theme: duel.theme,
+            mode: duel.mode ?? "CLASSIC",
             elo,
             duelId: duel.id,
         });
