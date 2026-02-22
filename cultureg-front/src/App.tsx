@@ -668,17 +668,21 @@ export default function App() {
                                         ← Précédent
                                     </button>
 
-                                    {duel.currentQuestionIndex === totalQ - 1 || duelMode === "FRENZY" ? (
+                                    {duelMode === "FRENZY" ? (
+                                        <button
+                                            onClick={() => duel.setCurrentQuestionIndex(Math.min(totalQ - 1, duel.currentQuestionIndex + 1))}
+                                            disabled={duel.currentQuestionIndex === totalQ - 1}
+                                            className="px-4 sm:px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-white text-sm sm:text-base font-medium shadow-lg shadow-amber-500/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+                                        >
+                                            Suivant →
+                                        </button>
+                                    ) : duel.currentQuestionIndex === totalQ - 1 ? (
                                         <button
                                             onClick={handleSubmit}
-                                            disabled={duelMode === "FRENZY" ? false : answeredCount < totalQ}
-                                            className={`px-4 sm:px-6 py-2.5 rounded-xl text-white text-sm sm:text-base font-semibold shadow-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98] ${
-                                                duelMode === "FRENZY"
-                                                    ? "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 shadow-red-500/20"
-                                                    : "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 shadow-green-500/20"
-                                            }`}
+                                            disabled={answeredCount < totalQ}
+                                            className="px-4 sm:px-6 py-2.5 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-sm sm:text-base font-semibold shadow-lg shadow-green-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
                                         >
-                                            {duelMode === "FRENZY" ? `Terminer (${answeredCount}/${totalQ}) ✓` : "Valider ✓"}
+                                            Valider ✓
                                         </button>
                                     ) : (
                                         <button
