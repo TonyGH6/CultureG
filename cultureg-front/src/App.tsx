@@ -23,14 +23,6 @@ function IconTrophy() {
     );
 }
 
-function IconSwords() {
-    return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m14.5 2 6 6-2 2-6-6 2-2ZM3.5 21.5l4-4m-4 4 4-4m-4 4ZM9.5 2l-6 6 2 2 6-6-2-2ZM20.5 21.5l-4-4m4 4-4-4m4 4Z" />
-        </svg>
-    );
-}
-
 /* ───────────────────── screens ───────────────────── */
 type Screen = "login" | "lobby" | "queue" | "duel" | "waiting-results" | "results" | "solo" | "solo-results";
 
@@ -296,9 +288,12 @@ export default function App() {
 
     /* ───────────────────── RENDER ───────────────────── */
     return (
-        <div className="min-h-screen bg-cover bg-center bg-no-repeat flex flex-col" style={{ backgroundImage: "url('/backround.png')" }}>
+        <div className="min-h-screen flex flex-col relative">
+            {/* Background images — mobile vs desktop */}
+            <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat md:hidden" style={{ backgroundImage: "url('/backroundMobile.png')" }} />
+            <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat hidden md:block" style={{ backgroundImage: "url('/backround.png')" }} />
             {/* HEADER */}
-            <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800/60">
+            <header className="flex items-center justify-between px-6 py-4 border-b border-stone-200 bg-white">
                 <div className="flex items-center gap-3">
                     <img src="/logo.png" alt="Owlympiad" className="w-10 h-10 rounded-full" />
                     <h1 className="text-2xl font-bold text-amber-400">
@@ -308,16 +303,16 @@ export default function App() {
 
                 {auth.isAuthed && (
                     <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 text-yellow-400">
+                        <div className="flex items-center gap-2 text-amber-500">
                             <IconTrophy />
                             <span className="font-semibold">{auth.elo}</span>
                         </div>
-                        <div className="text-sm text-gray-400">
+                        <div className="text-sm text-stone-500">
                             {auth.username}
                         </div>
                         <button
                             onClick={() => { auth.logout(); duel.resetDuel(); reconnectCheckedRef.current = false; setScreen("login"); }}
-                            className="text-xs text-gray-500 hover:text-gray-300 transition"
+                            className="text-xs text-stone-400 hover:text-stone-600 transition"
                         >
                             Déconnexion
                         </button>
@@ -331,15 +326,15 @@ export default function App() {
                 {/* ─── LOGIN ─── */}
                 {screen === "login" && (
                     <div className="w-full max-w-md">
-                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl shadow-amber-500/5">
+                        <div className="bg-white/90 backdrop-blur border border-stone-200 rounded-2xl p-8 shadow-2xl shadow-amber-500/10">
                             <div className="text-center mb-8">
                                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-500/10 mb-4">
                                     <img src="/logo.png" alt="Owlympiad" className="w-16 h-16 rounded-full" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-white">
+                                <h2 className="text-2xl font-bold text-stone-800">
                                     {isRegistering ? "Créer un compte" : "Bienvenue sur Owlympiad"}
                                 </h2>
-                                <p className="text-gray-400 mt-2">
+                                <p className="text-stone-500 mt-2">
                                     {isRegistering
                                         ? "Remplis les champs pour t'inscrire"
                                         : "Connecte-toi pour défier tes amis !"}
@@ -355,37 +350,37 @@ export default function App() {
                             <div className="space-y-4">
                                 {isRegistering && (
                                     <div>
-                                        <label htmlFor="username" className="block text-sm font-medium text-gray-400 mb-1.5">Pseudo</label>
+                                        <label htmlFor="username" className="block text-sm font-medium text-stone-600 mb-1.5">Pseudo</label>
                                         <input
                                             id="username"
                                             type="text"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
-                                            className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                                            className="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition"
                                             placeholder="Ton pseudo (min. 3 caractères)"
                                         />
                                     </div>
                                 )}
                                 <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1.5">Email</label>
+                                    <label htmlFor="email" className="block text-sm font-medium text-stone-600 mb-1.5">Email</label>
                                     <input
                                         id="email"
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                                        className="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition"
                                         placeholder="ton@email.com"
                                         onKeyDown={(e) => e.key === "Enter" && (isRegistering ? handleRegister() : handleLogin())}
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-1.5">Mot de passe</label>
+                                    <label htmlFor="password" className="block text-sm font-medium text-stone-600 mb-1.5">Mot de passe</label>
                                     <input
                                         id="password"
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                                        className="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition"
                                         placeholder={isRegistering ? "Min. 8 caractères" : "••••••••"}
                                         onKeyDown={(e) => e.key === "Enter" && (isRegistering ? handleRegister() : handleLogin())}
                                     />
@@ -401,7 +396,7 @@ export default function App() {
                                         </button>
                                         <button
                                             onClick={() => { setIsRegistering(false); setError(""); }}
-                                            className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-gray-300 font-medium rounded-xl border border-slate-700 hover:border-slate-600 transition-all duration-200 active:scale-[0.98]"
+                                            className="w-full py-3 bg-stone-100 hover:bg-stone-200 text-stone-600 font-medium rounded-xl border border-stone-300 hover:border-stone-400 transition-all duration-200 active:scale-[0.98]"
                                         >
                                             ← Retour à la connexion
                                         </button>
@@ -416,7 +411,7 @@ export default function App() {
                                         </button>
                                         <button
                                             onClick={() => { setIsRegistering(true); setError(""); }}
-                                            className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-gray-300 font-medium rounded-xl border border-slate-700 hover:border-slate-600 transition-all duration-200 active:scale-[0.98]"
+                                            className="w-full py-3 bg-stone-100 hover:bg-stone-200 text-stone-600 font-medium rounded-xl border border-stone-300 hover:border-stone-400 transition-all duration-200 active:scale-[0.98]"
                                         >
                                             Créer un compte
                                         </button>
@@ -430,12 +425,12 @@ export default function App() {
                 {/* ─── LOBBY ─── */}
                 {screen === "lobby" && (
                     <div className="w-full max-w-lg">
-                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
-                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-amber-500/20 to-sky-500/20 text-amber-400 mb-6">
-                                <IconSwords />
+                        <div className="bg-white/90 backdrop-blur border border-stone-200 rounded-2xl p-8 shadow-2xl text-center">
+                            <div className="flex justify-center mb-6">
+                                <img src="/logo.png" alt="Owlympiad" className="w-24 h-24 rounded-full" />
                             </div>
-                            <h2 className="text-3xl font-bold text-white mb-2">Prêt pour un duel ?</h2>
-                            <p className="text-gray-400 mb-8">
+                            <h2 className="text-3xl font-bold text-stone-800 mb-2">Prêt pour un duel ?</h2>
+                            <p className="text-stone-500 mb-8">
                                 Affronte un adversaire sur <span className="text-amber-400 font-semibold">10 questions</span> de culture générale
                             </p>
 
@@ -449,19 +444,19 @@ export default function App() {
                                 onClick={joinQueue}
                                 className="w-full py-4 text-lg bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-400 hover:to-sky-400 text-white font-bold rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
                             >
-                                <IconSwords />
+                                <span className="text-xl">⚡</span>
                                 Lancer un duel
                             </button>
 
                             <button
                                 onClick={startSoloMatch}
-                                className="mt-4 w-full py-4 text-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl border border-slate-700 hover:border-amber-500/50 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
+                                className="mt-4 w-full py-4 text-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold rounded-xl border border-stone-300 hover:border-amber-400 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
                             >
                                 <IconBrain />
                                 Jouer seul
                             </button>
 
-                            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
+                            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-stone-400">
                                 <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
                                 Thème : {theme}
                             </div>
@@ -472,18 +467,18 @@ export default function App() {
                 {/* ─── QUEUE / WAITING ─── */}
                 {screen === "queue" && (
                     <div className="w-full max-w-md">
-                        <div className="bg-slate-900/80 backdrop-blur border border-amber-500/30 rounded-2xl p-8 shadow-2xl text-center"
+                        <div className="bg-white/90 backdrop-blur border border-amber-400/40 rounded-2xl p-8 shadow-2xl text-center"
                              style={{ animation: "pulse-glow 2s infinite" }}>
                             <div className="mb-6">
                                 <div className="w-16 h-16 mx-auto rounded-full border-4 border-amber-500 border-t-transparent animate-spin" />
                             </div>
-                            <h2 className="text-2xl font-bold text-white mb-2">Recherche d'un adversaire…</h2>
-                            <p className="text-gray-400 mb-8">
+                            <h2 className="text-2xl font-bold text-stone-800 mb-2">Recherche d'un adversaire…</h2>
+                            <p className="text-stone-500 mb-8">
                                 Partage le lien avec un ami pour jouer ensemble !
                             </p>
                             <button
                                 onClick={cancelQueue}
-                                className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-gray-300 font-medium rounded-xl border border-slate-700 hover:border-slate-600 transition-all duration-200"
+                                className="px-8 py-3 bg-stone-100 hover:bg-stone-200 text-stone-600 font-medium rounded-xl border border-stone-300 hover:border-stone-400 transition-all duration-200"
                             >
                                 Annuler
                             </button>
@@ -497,14 +492,14 @@ export default function App() {
                         {/* progress bar */}
                         <div className="mb-6">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-medium text-gray-400">
+                                <span className="text-sm font-medium text-stone-600">
                                     Question {duel.currentQuestionIndex + 1} / {totalQ}
                                 </span>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-sm text-stone-400">
                                     {answeredCount} / {totalQ} répondu{answeredCount > 1 ? "es" : "e"}
                                 </span>
                             </div>
-                            <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div className="h-2 bg-stone-200 rounded-full overflow-hidden">
                                 <div
                                     className="h-full bg-gradient-to-r from-amber-500 to-sky-500 rounded-full transition-all duration-500 ease-out"
                                     style={{ width: `${progress}%` }}
@@ -513,12 +508,12 @@ export default function App() {
                         </div>
 
                         {/* question card */}
-                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-4 sm:p-8 shadow-2xl">
+                        <div className="bg-white/90 backdrop-blur border border-stone-200 rounded-2xl p-4 sm:p-8 shadow-2xl">
                             <div className="mb-6 sm:mb-8">
-                                <span className="inline-block px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                                <span className="inline-block px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 text-xs font-semibold uppercase tracking-wider mb-4">
                                     {theme}
                                 </span>
-                                <h2 className="text-xl sm:text-2xl font-bold text-white leading-relaxed">
+                                <h2 className="text-xl sm:text-2xl font-bold text-stone-800 leading-relaxed">
                                     {currentQ.prompt}
                                 </h2>
                             </div>
@@ -528,7 +523,7 @@ export default function App() {
                                     <img
                                         src={currentQ.imageUrl}
                                         alt="Illustration de la question"
-                                        className="max-h-64 rounded-xl border border-gray-700 object-contain"
+                                        className="max-h-64 rounded-xl border border-stone-200 object-contain"
                                     />
                                 </div>
                             )}
@@ -543,8 +538,8 @@ export default function App() {
                                             onClick={() => duel.selectAnswer(currentQ.id, option.id)}
                                             className={`w-full text-left px-6 py-4 rounded-xl border-2 transition-all duration-200 ${
                                                 isSelected
-                                                    ? "bg-amber-500/20 border-amber-500 text-white shadow-lg shadow-amber-500/20"
-                                                    : "bg-slate-800/50 border-slate-700 text-gray-300 hover:border-amber-500/50 hover:bg-slate-800"
+                                                    ? "bg-amber-500/15 border-amber-500 text-stone-800 shadow-lg shadow-amber-500/20"
+                                                    : "bg-stone-50 border-stone-200 text-stone-700 hover:border-amber-400 hover:bg-amber-50/50"
                                             }`}
                                         >
                                             <span className="font-medium">{option.label}</span>
@@ -564,8 +559,8 @@ export default function App() {
                                                     i === duel.currentQuestionIndex
                                                         ? "bg-amber-500 scale-125"
                                                         : duel.answers[q.id]
-                                                          ? "bg-amber-400/50"
-                                                          : "bg-slate-700"
+                                                          ? "bg-amber-400/60"
+                                                          : "bg-stone-300"
                                                 }`}
                                             />
                                         ))}
@@ -577,7 +572,7 @@ export default function App() {
                                     <button
                                         onClick={() => duel.setCurrentQuestionIndex(Math.max(0, duel.currentQuestionIndex - 1))}
                                         disabled={duel.currentQuestionIndex === 0}
-                                        className="px-4 sm:px-5 py-2.5 rounded-xl bg-slate-800 text-gray-300 text-sm sm:text-base font-medium border border-slate-700 hover:bg-slate-700 hover:border-slate-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                        className="px-4 sm:px-5 py-2.5 rounded-xl bg-stone-100 text-stone-600 text-sm sm:text-base font-medium border border-stone-300 hover:bg-stone-200 hover:border-stone-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                     >
                                         ← Précédent
                                     </button>
@@ -613,13 +608,13 @@ export default function App() {
                 {/* ─── WAITING FOR OPPONENT ─── */}
                 {screen === "waiting-results" && scoreResult && (
                     <div className="w-full max-w-md">
-                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
+                        <div className="bg-white/90 backdrop-blur border border-stone-200 rounded-2xl p-8 shadow-2xl text-center">
                             <div className="text-6xl mb-4 animate-bounce">⏳</div>
-                            <h2 className="text-2xl font-bold text-white mb-3">Réponses envoyées !</h2>
-                            <p className="text-gray-400 mb-6">
-                                Ton score : <span className="text-amber-400 font-bold">{scoreResult.score} / {scoreResult.total}</span>
+                            <h2 className="text-2xl font-bold text-stone-800 mb-3">Réponses envoyées !</h2>
+                            <p className="text-stone-500 mb-6">
+                                Ton score : <span className="text-amber-500 font-bold">{scoreResult.score} / {scoreResult.total}</span>
                             </p>
-                            <p className="text-gray-500 text-sm">En attente de ton adversaire…</p>
+                            <p className="text-stone-400 text-sm">En attente de ton adversaire…</p>
                             <div className="mt-6 flex justify-center">
                                 <div className="flex gap-1">
                                     <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: "0s" }} />
@@ -634,7 +629,7 @@ export default function App() {
                 {/* ─── RESULTS ─── */}
                 {screen === "results" && scoreResult && (
                     <div className="w-full max-w-lg">
-                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
+                        <div className="bg-white/90 backdrop-blur border border-stone-200 rounded-2xl p-8 shadow-2xl text-center">
                             {/* Winner/Loser/Draw display */}
                             {duelResult && (
                                 <div className="mb-6">
@@ -668,7 +663,7 @@ export default function App() {
                                     ) : (
                                         <div className="text-6xl mb-2">💪</div>
                                     )}
-                                    <h2 className="text-3xl font-bold text-white mb-2">Résultats</h2>
+                                    <h2 className="text-3xl font-bold text-stone-800 mb-2">Résultats</h2>
                                 </div>
                             )}
 
@@ -684,12 +679,12 @@ export default function App() {
                                                 className={`px-4 py-3 rounded-lg flex items-center justify-between ${
                                                     isWinner
                                                         ? "bg-yellow-500/10 border border-yellow-500/30"
-                                                        : "bg-gray-800/50 border border-gray-700"
+                                                        : "bg-stone-50 border border-stone-200"
                                                 }`}
                                             >
                                                 <div className="flex items-center gap-2">
                                                     {isWinner && <span className="text-yellow-400">👑</span>}
-                                                    <span className={`font-semibold ${isCurrentUser ? "text-amber-400" : "text-gray-300"}`}>
+                                                    <span className={`font-semibold ${isCurrentUser ? "text-amber-500" : "text-stone-600"}`}>
                                                         {isCurrentUser ? "Toi" : "Adversaire"}
                                                     </span>
                                                 </div>
@@ -699,7 +694,7 @@ export default function App() {
                                                             {player.eloDelta >= 0 ? "+" : ""}{player.eloDelta} Elo
                                                         </span>
                                                     )}
-                                                    <span className="text-2xl font-bold text-white">
+                                                    <span className="text-2xl font-bold text-stone-800">
                                                         {player.score ?? 0} / {scoreResult.total}
                                                     </span>
                                                 </div>
@@ -716,9 +711,9 @@ export default function App() {
                                         <span className="text-6xl font-black bg-gradient-to-r from-amber-400 to-sky-400 bg-clip-text text-transparent">
                                             {scoreResult.score}
                                         </span>
-                                        <span className="text-2xl text-gray-500">/ {scoreResult.total}</span>
+                                        <span className="text-2xl text-stone-400">/ {scoreResult.total}</span>
                                     </div>
-                                    <p className="text-gray-400 mt-2">
+                                    <p className="text-stone-500 mt-2">
                                         {scoreResult.score === scoreResult.total
                                             ? "Score parfait ! 🔥"
                                             : scoreResult.score >= scoreResult.total * 0.7
@@ -730,7 +725,7 @@ export default function App() {
                                 </div>
                             )}
 
-                            <div className="flex items-center justify-center gap-2 text-yellow-400 mb-8">
+                            <div className="flex items-center justify-center gap-2 text-amber-500 mb-8">
                                 <IconTrophy />
                                 <span className="font-semibold">Elo : {auth.elo}</span>
                             </div>
@@ -738,7 +733,7 @@ export default function App() {
                             {/* Detailed correction */}
                             {scoreResult.details && scoreResult.details.length > 0 && (
                                 <div className="mb-6 space-y-2 text-left">
-                                    <h3 className="text-sm font-semibold text-gray-400 mb-3">Correction détaillée</h3>
+                                    <h3 className="text-sm font-semibold text-stone-500 mb-3">Correction détaillée</h3>
                                     {scoreResult.details.map((detail, idx) => {
                                         const isOpen = expandedQuestions.has(`duel-${idx}`);
                                         return (
@@ -758,26 +753,26 @@ export default function App() {
                                                         else next.add(`duel-${idx}`);
                                                         return next;
                                                     })}
-                                                    className="w-full flex items-center gap-3 p-4 text-left cursor-pointer hover:bg-white/5 transition-colors"
+                                                    className="w-full flex items-center gap-3 p-4 text-left cursor-pointer hover:bg-stone-50 transition-colors"
                                                 >
-                                                    <span className={`text-xl ${detail.isCorrect ? "text-green-400" : "text-red-400"}`}>
+                                                    <span className={`text-xl ${detail.isCorrect ? "text-green-500" : "text-red-500"}`}>
                                                         {detail.isCorrect ? "✓" : "✗"}
                                                     </span>
-                                                    <span className="flex-1 text-sm text-white font-medium">Question {idx + 1}</span>
-                                                    <span className={`text-gray-400 text-xs transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
+                                                    <span className="flex-1 text-sm text-stone-700 font-medium">Question {idx + 1}</span>
+                                                    <span className={`text-stone-400 text-xs transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
                                                         ▼
                                                     </span>
                                                 </button>
 
                                                 {isOpen && (
                                                     <div className="px-4 pb-4">
-                                                        <p className="text-sm text-gray-300 mb-3 leading-relaxed">{detail.prompt}</p>
+                                                        <p className="text-sm text-stone-600 mb-3 leading-relaxed">{detail.prompt}</p>
                                                         {detail.imageUrl && (
                                                             <div className="mb-3 flex justify-center">
                                                                 <img
                                                                     src={detail.imageUrl}
                                                                     alt="Illustration"
-                                                                    className="max-h-48 rounded-lg border border-gray-700 object-contain"
+                                                                    className="max-h-48 rounded-lg border border-stone-200 object-contain"
                                                                 />
                                                             </div>
                                                         )}
@@ -790,10 +785,10 @@ export default function App() {
                                                                         key={opt.id}
                                                                         className={`text-sm px-3 py-2 rounded-lg ${
                                                                             isCorrectAnswer
-                                                                                ? "bg-green-500/20 text-green-300 font-semibold"
+                                                                                ? "bg-green-500/15 text-green-700 font-semibold"
                                                                                 : isUserAnswer
-                                                                                  ? "bg-red-500/20 text-red-300"
-                                                                                  : "bg-gray-800/50 text-gray-400"
+                                                                                  ? "bg-red-500/15 text-red-600"
+                                                                                  : "bg-stone-100 text-stone-500"
                                                                         }`}
                                                                     >
                                                                         {opt.label}
@@ -804,7 +799,7 @@ export default function App() {
                                                             })}
                                                         </div>
                                                         {detail.explanation && (
-                                                            <p className="mt-3 text-xs text-gray-400 italic leading-relaxed border-t border-gray-700/50 pt-3">
+                                                            <p className="mt-3 text-xs text-stone-400 italic leading-relaxed border-t border-stone-200 pt-3">
                                                                 💡 {detail.explanation}
                                                             </p>
                                                         )}
@@ -832,14 +827,14 @@ export default function App() {
                         {/* progress bar */}
                         <div className="mb-6">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-medium text-gray-400">
+                                <span className="text-sm font-medium text-stone-600">
                                     Question {solo.currentQuestionIndex + 1} / {solo.questions.length}
                                 </span>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-sm text-stone-400">
                                     {Object.keys(solo.answers).length} / {solo.questions.length} répondue(s)
                                 </span>
                             </div>
-                            <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div className="h-2 bg-stone-200 rounded-full overflow-hidden">
                                 <div
                                     className="h-full bg-gradient-to-r from-amber-500 to-sky-500 rounded-full transition-all duration-500 ease-out"
                                     style={{ width: `${((solo.currentQuestionIndex + 1) / solo.questions.length) * 100}%` }}
@@ -848,8 +843,8 @@ export default function App() {
                         </div>
 
                         {/* question card */}
-                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl">
-                            <h3 className="text-xl font-semibold text-white mb-6 leading-relaxed">
+                        <div className="bg-white/90 backdrop-blur border border-stone-200 rounded-2xl p-8 shadow-2xl">
+                            <h3 className="text-xl font-semibold text-stone-800 mb-6 leading-relaxed">
                                 {solo.questions[solo.currentQuestionIndex].prompt}
                             </h3>
 
@@ -858,7 +853,7 @@ export default function App() {
                                     <img
                                         src={solo.questions[solo.currentQuestionIndex].imageUrl!}
                                         alt="Illustration de la question"
-                                        className="max-h-64 rounded-xl border border-gray-700 object-contain"
+                                        className="max-h-64 rounded-xl border border-stone-200 object-contain"
                                     />
                                 </div>
                             )}
@@ -872,8 +867,8 @@ export default function App() {
                                             onClick={() => solo.selectAnswer(solo.questions[solo.currentQuestionIndex].id, opt.id)}
                                             className={`w-full text-left px-6 py-4 rounded-xl border-2 transition-all duration-200 ${
                                                 isSelected
-                                                    ? "bg-amber-500/20 border-amber-500 text-white shadow-lg shadow-amber-500/20"
-                                                    : "bg-slate-800/50 border-slate-700 text-gray-300 hover:border-amber-500/50 hover:bg-slate-800"
+                                                    ? "bg-amber-500/15 border-amber-500 text-stone-800 shadow-lg shadow-amber-500/20"
+                                                    : "bg-stone-50 border-stone-200 text-stone-700 hover:border-amber-400 hover:bg-amber-50/50"
                                             }`}
                                         >
                                             <span className="font-medium">{opt.label}</span>
@@ -887,7 +882,7 @@ export default function App() {
                                 <button
                                     onClick={() => solo.setCurrentQuestionIndex(Math.max(0, solo.currentQuestionIndex - 1))}
                                     disabled={solo.currentQuestionIndex === 0}
-                                    className="px-6 py-3 bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed text-gray-300 font-medium rounded-xl border border-slate-700 transition-all"
+                                    className="px-6 py-3 bg-stone-100 hover:bg-stone-200 disabled:opacity-30 disabled:cursor-not-allowed text-stone-600 font-medium rounded-xl border border-stone-300 transition-all"
                                 >
                                     ← Précédent
                                 </button>
@@ -916,7 +911,7 @@ export default function App() {
                 {/* ─── SOLO RESULTS ─── */}
                 {screen === "solo-results" && solo.result && (
                     <div className="w-full max-w-lg">
-                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl">
+                        <div className="bg-white/90 backdrop-blur border border-stone-200 rounded-2xl p-8 shadow-2xl">
                             <div className="text-center mb-8">
                                 <div className="mb-4">
                                     {solo.result.score >= solo.result.total * 0.7 ? (
@@ -928,23 +923,23 @@ export default function App() {
                                     )}
                                 </div>
 
-                                <h2 className="text-3xl font-bold text-white mb-2">Résultats</h2>
+                                <h2 className="text-3xl font-bold text-stone-800 mb-2">Résultats</h2>
 
                                 <div className="my-6">
                                     <div className="inline-flex items-baseline gap-1">
                                         <span className="text-6xl font-black bg-gradient-to-r from-amber-400 to-sky-400 bg-clip-text text-transparent">
                                             {solo.result.score}
                                         </span>
-                                        <span className="text-2xl text-gray-500">/ {solo.result.total}</span>
+                                        <span className="text-2xl text-stone-400">/ {solo.result.total}</span>
                                     </div>
-                                    <p className="mt-2 text-sm text-gray-500">Mode entraînement — pas d'impact sur l'Elo</p>
+                                    <p className="mt-2 text-sm text-stone-400">Mode entraînement — pas d'impact sur l'Elo</p>
                                 </div>
 
                             </div>
 
                             {/* detailed answers */}
                             <div className="mb-6 space-y-2">
-                                <h3 className="text-sm font-semibold text-gray-400 mb-3">Correction détaillée</h3>
+                                <h3 className="text-sm font-semibold text-stone-500 mb-3">Correction détaillée</h3>
                                 {solo.result.details.map((detail, idx) => {
                                     const isOpen = expandedQuestions.has(`solo-${idx}`);
                                     return (
@@ -964,26 +959,26 @@ export default function App() {
                                                     else next.add(`solo-${idx}`);
                                                     return next;
                                                 })}
-                                                className="w-full flex items-center gap-3 p-4 text-left cursor-pointer hover:bg-white/5 transition-colors"
+                                                className="w-full flex items-center gap-3 p-4 text-left cursor-pointer hover:bg-stone-50 transition-colors"
                                             >
-                                                <span className={`text-xl ${detail.isCorrect ? "text-green-400" : "text-red-400"}`}>
+                                                <span className={`text-xl ${detail.isCorrect ? "text-green-500" : "text-red-500"}`}>
                                                     {detail.isCorrect ? "✓" : "✗"}
                                                 </span>
-                                                <span className="flex-1 text-sm text-white font-medium">Question {idx + 1}</span>
-                                                <span className={`text-gray-400 text-xs transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
+                                                <span className="flex-1 text-sm text-stone-700 font-medium">Question {idx + 1}</span>
+                                                <span className={`text-stone-400 text-xs transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
                                                     ▼
                                                 </span>
                                             </button>
 
                                             {isOpen && (
                                                 <div className="px-4 pb-4">
-                                                    <p className="text-sm text-gray-300 mb-3 leading-relaxed">{detail.prompt}</p>
+                                                    <p className="text-sm text-stone-600 mb-3 leading-relaxed">{detail.prompt}</p>
                                                     {detail.imageUrl && (
                                                         <div className="mb-3 flex justify-center">
                                                             <img
                                                                 src={detail.imageUrl}
                                                                 alt="Illustration"
-                                                                className="max-h-48 rounded-lg border border-gray-700 object-contain"
+                                                                className="max-h-48 rounded-lg border border-stone-200 object-contain"
                                                             />
                                                         </div>
                                                     )}
@@ -996,10 +991,10 @@ export default function App() {
                                                                     key={opt.id}
                                                                     className={`text-sm px-3 py-2 rounded-lg ${
                                                                         isCorrectAnswer
-                                                                            ? "bg-green-500/20 text-green-300 font-semibold"
+                                                                            ? "bg-green-500/15 text-green-700 font-semibold"
                                                                             : isUserAnswer
-                                                                              ? "bg-red-500/20 text-red-300"
-                                                                              : "bg-gray-800/50 text-gray-400"
+                                                                              ? "bg-red-500/15 text-red-600"
+                                                                              : "bg-stone-100 text-stone-500"
                                                                     }`}
                                                                 >
                                                                     {opt.label}
@@ -1010,7 +1005,7 @@ export default function App() {
                                                         })}
                                                     </div>
                                                     {detail.explanation && (
-                                                        <p className="mt-3 text-xs text-gray-400 italic leading-relaxed border-t border-gray-700/50 pt-3">
+                                                        <p className="mt-3 text-xs text-stone-400 italic leading-relaxed border-t border-stone-200 pt-3">
                                                             💡 {detail.explanation}
                                                         </p>
                                                     )}
@@ -1037,15 +1032,15 @@ export default function App() {
             </main>
 
             {/* FOOTER / DEBUG LOGS */}
-            <footer className="px-6 py-3 border-t border-gray-800/60">
+            <footer className="px-6 py-3 border-t border-stone-200/60">
                 <button
                     onClick={() => setShowLogs(!showLogs)}
-                    className="text-xs text-gray-600 hover:text-gray-400 transition"
+                    className="text-xs text-stone-400 hover:text-stone-600 transition"
                 >
                     {showLogs ? "▼ Masquer les logs" : "▶ Afficher les logs"}
                 </button>
                 {showLogs && (
-                    <div className="mt-2 max-h-40 overflow-y-auto rounded-lg bg-gray-950 border border-gray-800 p-3 font-mono text-[11px] text-gray-500 space-y-0.5">
+                    <div className="mt-2 max-h-40 overflow-y-auto rounded-lg bg-stone-100 border border-stone-200 p-3 font-mono text-[11px] text-stone-400 space-y-0.5">
                         {log.length === 0
                             ? <div>(no logs)</div>
                             : log.map((l, i) => <div key={i}>{l}</div>)
