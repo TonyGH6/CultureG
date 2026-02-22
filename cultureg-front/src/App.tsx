@@ -296,12 +296,12 @@ export default function App() {
 
     /* ───────────────────── RENDER ───────────────────── */
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-purple-950 flex flex-col">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 flex flex-col">
             {/* HEADER */}
             <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800/60">
                 <div className="flex items-center gap-3">
                     <img src="/logo.png" alt="Owlympiad" className="w-10 h-10 rounded-full" />
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-sky-400 bg-clip-text text-transparent">
                         Owlympiad
                     </h1>
                 </div>
@@ -331,9 +331,9 @@ export default function App() {
                 {/* ─── LOGIN ─── */}
                 {screen === "login" && (
                     <div className="w-full max-w-md">
-                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl shadow-purple-500/5">
+                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl shadow-amber-500/5">
                             <div className="text-center mb-8">
-                                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-500/10 mb-4">
+                                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-500/10 mb-4">
                                     <img src="/logo.png" alt="Owlympiad" className="w-16 h-16 rounded-full" />
                                 </div>
                                 <h2 className="text-2xl font-bold text-white">
@@ -361,7 +361,7 @@ export default function App() {
                                             type="text"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
-                                            className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                            className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
                                             placeholder="Ton pseudo (min. 3 caractères)"
                                         />
                                     </div>
@@ -373,7 +373,7 @@ export default function App() {
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                        className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
                                         placeholder="ton@email.com"
                                         onKeyDown={(e) => e.key === "Enter" && (isRegistering ? handleRegister() : handleLogin())}
                                     />
@@ -385,7 +385,7 @@ export default function App() {
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                        className="w-full px-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
                                         placeholder={isRegistering ? "Min. 8 caractères" : "••••••••"}
                                         onKeyDown={(e) => e.key === "Enter" && (isRegistering ? handleRegister() : handleLogin())}
                                     />
@@ -395,13 +395,13 @@ export default function App() {
                                     <>
                                         <button
                                             onClick={handleRegister}
-                                            className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 active:scale-[0.98]"
+                                            className="w-full py-3 bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-400 hover:to-sky-400 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-200 active:scale-[0.98]"
                                         >
                                             S'inscrire
                                         </button>
                                         <button
                                             onClick={() => { setIsRegistering(false); setError(""); }}
-                                            className="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-200 active:scale-[0.98]"
+                                            className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-gray-300 font-medium rounded-xl border border-slate-700 hover:border-slate-600 transition-all duration-200 active:scale-[0.98]"
                                         >
                                             ← Retour à la connexion
                                         </button>
@@ -410,13 +410,13 @@ export default function App() {
                                     <>
                                         <button
                                             onClick={handleLogin}
-                                            className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 active:scale-[0.98]"
+                                            className="w-full py-3 bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-400 hover:to-sky-400 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-200 active:scale-[0.98]"
                                         >
                                             Se connecter
                                         </button>
                                         <button
                                             onClick={() => { setIsRegistering(true); setError(""); }}
-                                            className="w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-200 active:scale-[0.98]"
+                                            className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-gray-300 font-medium rounded-xl border border-slate-700 hover:border-slate-600 transition-all duration-200 active:scale-[0.98]"
                                         >
                                             Créer un compte
                                         </button>
@@ -430,13 +430,13 @@ export default function App() {
                 {/* ─── LOBBY ─── */}
                 {screen === "lobby" && (
                     <div className="w-full max-w-lg">
-                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl text-center">
-                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-purple-400 mb-6">
+                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
+                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-amber-500/20 to-sky-500/20 text-amber-400 mb-6">
                                 <IconSwords />
                             </div>
                             <h2 className="text-3xl font-bold text-white mb-2">Prêt pour un duel ?</h2>
                             <p className="text-gray-400 mb-8">
-                                Affronte un adversaire sur <span className="text-purple-400 font-semibold">10 questions</span> de culture générale
+                                Affronte un adversaire sur <span className="text-amber-400 font-semibold">10 questions</span> de culture générale
                             </p>
 
                             {error && (
@@ -447,7 +447,7 @@ export default function App() {
 
                             <button
                                 onClick={joinQueue}
-                                className="w-full py-4 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
+                                className="w-full py-4 text-lg bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-400 hover:to-sky-400 text-white font-bold rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
                             >
                                 <IconSwords />
                                 Lancer un duel
@@ -455,7 +455,7 @@ export default function App() {
 
                             <button
                                 onClick={startSoloMatch}
-                                className="mt-4 w-full py-4 text-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl border border-gray-700 hover:border-purple-500/50 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
+                                className="mt-4 w-full py-4 text-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl border border-slate-700 hover:border-amber-500/50 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
                             >
                                 <IconBrain />
                                 Jouer seul
@@ -472,10 +472,10 @@ export default function App() {
                 {/* ─── QUEUE / WAITING ─── */}
                 {screen === "queue" && (
                     <div className="w-full max-w-md">
-                        <div className="bg-gray-900/80 backdrop-blur border border-purple-500/30 rounded-2xl p-8 shadow-2xl text-center"
+                        <div className="bg-slate-900/80 backdrop-blur border border-amber-500/30 rounded-2xl p-8 shadow-2xl text-center"
                              style={{ animation: "pulse-glow 2s infinite" }}>
                             <div className="mb-6">
-                                <div className="w-16 h-16 mx-auto rounded-full border-4 border-purple-500 border-t-transparent animate-spin" />
+                                <div className="w-16 h-16 mx-auto rounded-full border-4 border-amber-500 border-t-transparent animate-spin" />
                             </div>
                             <h2 className="text-2xl font-bold text-white mb-2">Recherche d'un adversaire…</h2>
                             <p className="text-gray-400 mb-8">
@@ -483,7 +483,7 @@ export default function App() {
                             </p>
                             <button
                                 onClick={cancelQueue}
-                                className="px-8 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-200"
+                                className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-gray-300 font-medium rounded-xl border border-slate-700 hover:border-slate-600 transition-all duration-200"
                             >
                                 Annuler
                             </button>
@@ -506,16 +506,16 @@ export default function App() {
                             </div>
                             <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                                 <div
-                                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500 ease-out"
+                                    className="h-full bg-gradient-to-r from-amber-500 to-sky-500 rounded-full transition-all duration-500 ease-out"
                                     style={{ width: `${progress}%` }}
                                 />
                             </div>
                         </div>
 
                         {/* question card */}
-                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-4 sm:p-8 shadow-2xl">
+                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-4 sm:p-8 shadow-2xl">
                             <div className="mb-6 sm:mb-8">
-                                <span className="inline-block px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                                <span className="inline-block px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-4">
                                     {theme}
                                 </span>
                                 <h2 className="text-xl sm:text-2xl font-bold text-white leading-relaxed">
@@ -543,17 +543,15 @@ export default function App() {
                                             onClick={() => duel.selectAnswer(currentQ.id, option.id)}
                                             className={`w-full text-left px-6 py-4 rounded-xl border-2 transition-all duration-200 ${
                                                 isSelected
-                                                    ? "bg-purple-500/20 border-purple-500 text-white shadow-lg shadow-purple-500/20"
-                                                    : "bg-gray-800/50 border-gray-700 text-gray-300 hover:border-purple-500/50 hover:bg-gray-800"
+                                                    ? "bg-amber-500/20 border-amber-500 text-white shadow-lg shadow-amber-500/20"
+                                                    : "bg-slate-800/50 border-slate-700 text-gray-300 hover:border-amber-500/50 hover:bg-slate-800"
                                             }`}
                                         >
                                             <span className="font-medium">{option.label}</span>
                                         </button>
                                     );
-                                })}
-                            </div>
-
-                            {/* navigation */}
+                                })}  
+                            </div>                            {/* navigation */}
                             <div className="mt-6 sm:mt-8 space-y-4">
                                 {/* question dots — scrollable on mobile */}
                                 <div className="flex justify-center overflow-x-auto pb-1">
@@ -564,10 +562,10 @@ export default function App() {
                                                 onClick={() => duel.setCurrentQuestionIndex(i)}
                                                 className={`w-3 h-3 rounded-full transition-all flex-shrink-0 ${
                                                     i === duel.currentQuestionIndex
-                                                        ? "bg-purple-500 scale-125"
+                                                        ? "bg-amber-500 scale-125"
                                                         : duel.answers[q.id]
-                                                          ? "bg-purple-400/50"
-                                                          : "bg-gray-700"
+                                                          ? "bg-amber-400/50"
+                                                          : "bg-slate-700"
                                                 }`}
                                             />
                                         ))}
@@ -579,7 +577,7 @@ export default function App() {
                                     <button
                                         onClick={() => duel.setCurrentQuestionIndex(Math.max(0, duel.currentQuestionIndex - 1))}
                                         disabled={duel.currentQuestionIndex === 0}
-                                        className="px-4 sm:px-5 py-2.5 rounded-xl bg-gray-800 text-gray-300 text-sm sm:text-base font-medium border border-gray-700 hover:bg-gray-700 hover:border-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                        className="px-4 sm:px-5 py-2.5 rounded-xl bg-slate-800 text-gray-300 text-sm sm:text-base font-medium border border-slate-700 hover:bg-slate-700 hover:border-slate-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                                     >
                                         ← Précédent
                                     </button>
@@ -595,7 +593,7 @@ export default function App() {
                                     ) : (
                                         <button
                                             onClick={() => duel.setCurrentQuestionIndex(duel.currentQuestionIndex + 1)}
-                                            className="px-4 sm:px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm sm:text-base font-medium shadow-lg shadow-purple-500/20 transition-all active:scale-[0.98]"
+                                            className="px-4 sm:px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-white text-sm sm:text-base font-medium shadow-lg shadow-amber-500/20 transition-all active:scale-[0.98]"
                                         >
                                             Suivant →
                                         </button>
@@ -615,18 +613,18 @@ export default function App() {
                 {/* ─── WAITING FOR OPPONENT ─── */}
                 {screen === "waiting-results" && scoreResult && (
                     <div className="w-full max-w-md">
-                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl text-center">
+                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
                             <div className="text-6xl mb-4 animate-bounce">⏳</div>
                             <h2 className="text-2xl font-bold text-white mb-3">Réponses envoyées !</h2>
                             <p className="text-gray-400 mb-6">
-                                Ton score : <span className="text-purple-400 font-bold">{scoreResult.score} / {scoreResult.total}</span>
+                                Ton score : <span className="text-amber-400 font-bold">{scoreResult.score} / {scoreResult.total}</span>
                             </p>
                             <p className="text-gray-500 text-sm">En attente de ton adversaire…</p>
                             <div className="mt-6 flex justify-center">
                                 <div className="flex gap-1">
-                                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: "0s" }} />
-                                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
-                                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
+                                    <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: "0s" }} />
+                                    <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
+                                    <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }} />
                                 </div>
                             </div>
                         </div>
@@ -636,7 +634,7 @@ export default function App() {
                 {/* ─── RESULTS ─── */}
                 {screen === "results" && scoreResult && (
                     <div className="w-full max-w-lg">
-                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl text-center">
+                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
                             {/* Winner/Loser/Draw display */}
                             {duelResult && (
                                 <div className="mb-6">
@@ -691,7 +689,7 @@ export default function App() {
                                             >
                                                 <div className="flex items-center gap-2">
                                                     {isWinner && <span className="text-yellow-400">👑</span>}
-                                                    <span className={`font-semibold ${isCurrentUser ? "text-purple-400" : "text-gray-300"}`}>
+                                                    <span className={`font-semibold ${isCurrentUser ? "text-amber-400" : "text-gray-300"}`}>
                                                         {isCurrentUser ? "Toi" : "Adversaire"}
                                                     </span>
                                                 </div>
@@ -715,7 +713,7 @@ export default function App() {
                             {!duelResult && (
                                 <div className="my-8">
                                     <div className="inline-flex items-baseline gap-1">
-                                        <span className="text-6xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                        <span className="text-6xl font-black bg-gradient-to-r from-amber-400 to-sky-400 bg-clip-text text-transparent">
                                             {scoreResult.score}
                                         </span>
                                         <span className="text-2xl text-gray-500">/ {scoreResult.total}</span>
@@ -820,7 +818,7 @@ export default function App() {
 
                             <button
                                 onClick={playAgain}
-                                className="w-full py-4 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 active:scale-[0.98]"
+                                className="w-full py-4 text-lg bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-400 hover:to-sky-400 text-white font-bold rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-200 active:scale-[0.98]"
                             >
                                 Rejouer
                             </button>
@@ -843,14 +841,14 @@ export default function App() {
                             </div>
                             <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                                 <div
-                                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500 ease-out"
+                                    className="h-full bg-gradient-to-r from-amber-500 to-sky-500 rounded-full transition-all duration-500 ease-out"
                                     style={{ width: `${((solo.currentQuestionIndex + 1) / solo.questions.length) * 100}%` }}
                                 />
                             </div>
                         </div>
 
                         {/* question card */}
-                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl">
+                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl">
                             <h3 className="text-xl font-semibold text-white mb-6 leading-relaxed">
                                 {solo.questions[solo.currentQuestionIndex].prompt}
                             </h3>
@@ -874,8 +872,8 @@ export default function App() {
                                             onClick={() => solo.selectAnswer(solo.questions[solo.currentQuestionIndex].id, opt.id)}
                                             className={`w-full text-left px-6 py-4 rounded-xl border-2 transition-all duration-200 ${
                                                 isSelected
-                                                    ? "bg-purple-500/20 border-purple-500 text-white shadow-lg shadow-purple-500/20"
-                                                    : "bg-gray-800/50 border-gray-700 text-gray-300 hover:border-purple-500/50 hover:bg-gray-800"
+                                                    ? "bg-amber-500/20 border-amber-500 text-white shadow-lg shadow-amber-500/20"
+                                                    : "bg-slate-800/50 border-slate-700 text-gray-300 hover:border-amber-500/50 hover:bg-slate-800"
                                             }`}
                                         >
                                             <span className="font-medium">{opt.label}</span>
@@ -889,7 +887,7 @@ export default function App() {
                                 <button
                                     onClick={() => solo.setCurrentQuestionIndex(Math.max(0, solo.currentQuestionIndex - 1))}
                                     disabled={solo.currentQuestionIndex === 0}
-                                    className="px-6 py-3 bg-gray-800 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed text-gray-300 font-medium rounded-xl border border-gray-700 transition-all"
+                                    className="px-6 py-3 bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed text-gray-300 font-medium rounded-xl border border-slate-700 transition-all"
                                 >
                                     ← Précédent
                                 </button>
@@ -897,7 +895,7 @@ export default function App() {
                                 {solo.currentQuestionIndex < solo.questions.length - 1 ? (
                                     <button
                                         onClick={() => solo.setCurrentQuestionIndex(solo.currentQuestionIndex + 1)}
-                                        className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition-all"
+                                        className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white font-semibold rounded-xl transition-all"
                                     >
                                         Suivant →
                                     </button>
@@ -905,7 +903,7 @@ export default function App() {
                                     <button
                                         onClick={submitSoloMatch}
                                         disabled={Object.keys(solo.answers).length < solo.questions.length}
-                                        className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all"
+                                        className="px-8 py-3 bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-400 hover:to-sky-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-lg transition-all"
                                     >
                                         Valider mes réponses
                                     </button>
@@ -918,7 +916,7 @@ export default function App() {
                 {/* ─── SOLO RESULTS ─── */}
                 {screen === "solo-results" && solo.result && (
                     <div className="w-full max-w-lg">
-                        <div className="bg-gray-900/80 backdrop-blur border border-gray-800 rounded-2xl p-8 shadow-2xl">
+                        <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl">
                             <div className="text-center mb-8">
                                 <div className="mb-4">
                                     {solo.result.score >= solo.result.total * 0.7 ? (
@@ -934,7 +932,7 @@ export default function App() {
 
                                 <div className="my-6">
                                     <div className="inline-flex items-baseline gap-1">
-                                        <span className="text-6xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                        <span className="text-6xl font-black bg-gradient-to-r from-amber-400 to-sky-400 bg-clip-text text-transparent">
                                             {solo.result.score}
                                         </span>
                                         <span className="text-2xl text-gray-500">/ {solo.result.total}</span>
@@ -1029,7 +1027,7 @@ export default function App() {
                                     setExpandedQuestions(new Set());
                                     setScreen("lobby");
                                 }}
-                                className="w-full py-4 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-200 active:scale-[0.98]"
+                                className="w-full py-4 text-lg bg-gradient-to-r from-amber-500 to-sky-500 hover:from-amber-400 hover:to-sky-400 text-white font-bold rounded-xl shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-200 active:scale-[0.98]"
                             >
                                 Retour au lobby
                             </button>
