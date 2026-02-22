@@ -668,13 +668,17 @@ export default function App() {
                                         ← Précédent
                                     </button>
 
-                                    {duel.currentQuestionIndex === totalQ - 1 ? (
+                                    {duel.currentQuestionIndex === totalQ - 1 || duelMode === "FRENZY" ? (
                                         <button
                                             onClick={handleSubmit}
-                                            disabled={answeredCount < totalQ}
-                                            className="px-4 sm:px-6 py-2.5 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-sm sm:text-base font-semibold shadow-lg shadow-green-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+                                            disabled={duelMode === "FRENZY" ? false : answeredCount < totalQ}
+                                            className={`px-4 sm:px-6 py-2.5 rounded-xl text-white text-sm sm:text-base font-semibold shadow-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98] ${
+                                                duelMode === "FRENZY"
+                                                    ? "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-400 hover:to-orange-400 shadow-red-500/20"
+                                                    : "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 shadow-green-500/20"
+                                            }`}
                                         >
-                                            Valider ✓
+                                            {duelMode === "FRENZY" ? `Terminer (${answeredCount}/${totalQ}) ✓` : "Valider ✓"}
                                         </button>
                                     ) : (
                                         <button
@@ -824,7 +828,11 @@ export default function App() {
                             {/* Detailed correction */}
                             {scoreResult.details && scoreResult.details.length > 0 && (
                                 <div className="mb-6 space-y-2 text-left">
-                                    <h3 className="text-sm font-semibold text-stone-500 mb-3">Correction détaillée</h3>
+                                    <h3 className="text-sm font-semibold text-stone-500 mb-3">
+                                        {duelMode === "FRENZY"
+                                            ? `Correction — ${scoreResult.details.length} question${scoreResult.details.length > 1 ? "s" : ""} répondue${scoreResult.details.length > 1 ? "s" : ""} sur ${scoreResult.total}`
+                                            : "Correction détaillée"}
+                                    </h3>
                                     {scoreResult.details.map((detail, idx) => {
                                         const isOpen = expandedQuestions.has(`duel-${idx}`);
                                         return (
