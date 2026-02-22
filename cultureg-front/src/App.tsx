@@ -332,28 +332,30 @@ export default function App() {
             <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat md:hidden" style={{ backgroundImage: "url('/backroundMobile.png')" }} />
             <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat hidden md:block" style={{ backgroundImage: "url('/backround.png')" }} />
             {/* HEADER */}
-            <header className="flex items-center justify-between px-6 py-4 border-b border-stone-200 bg-white">
-                <div className="flex items-center gap-3">
-                    <img src="/logo.png" alt="Owlympiad" className="w-10 h-10 rounded-full" />
-                    <h1 className="text-2xl font-bold text-amber-400">
+            <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-stone-200 bg-white">
+                <div className="flex items-center gap-2 md:gap-3">
+                    <img src="/logo.png" alt="Owlympiad" className="w-8 h-8 md:w-10 md:h-10 rounded-full" />
+                    {/* Title hidden on mobile when authenticated to save space */}
+                    <h1 className={`font-bold text-amber-400 ${auth.isAuthed ? "hidden md:block text-2xl" : "text-xl md:text-2xl"}`}>
                         Owlympiad
                     </h1>
                 </div>
 
                 {auth.isAuthed && (
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 text-amber-500">
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <div className="flex items-center gap-1.5 text-amber-500">
                             <IconTrophy />
-                            <span className="font-semibold">{auth.elo}</span>
+                            <span className="font-semibold text-sm md:text-base">{auth.elo}</span>
                         </div>
-                        <div className="text-sm text-stone-500">
+                        <div className="text-xs md:text-sm text-stone-500 max-w-[80px] md:max-w-none truncate">
                             {auth.username}
                         </div>
                         <button
                             onClick={() => { auth.logout(); duel.resetDuel(); reconnectCheckedRef.current = false; setScreen("login"); }}
                             className="text-xs text-stone-400 hover:text-stone-600 transition"
                         >
-                            Déconnexion
+                            Déco
+                            <span className="hidden md:inline">nnexion</span>
                         </button>
                     </div>
                 )}
